@@ -1,0 +1,8 @@
+Changelog
+========
+
+30/12/12 - alpha.v2
+Switched repositories
+UI adjustments in the SubjectDetails Activity
+Reworked and reorganzied the 'newuser' procedure.
+Issue:Still runs on only android 3.0+ since the NumberPicker View Widget isn't available on previous versions. Possible workaround is to make a custom one.
