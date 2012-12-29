@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:padding="10dp">
+    
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+				        
+				    
+				    <TextView
+				        android:id="@+id/code_detailed"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:layout_alignParentLeft="true"
+				        android:layout_alignParentTop="true"
+				        android:layout_margin="5dp"
+				        android:layout_marginBottom="0dp"
+				        android:maxLines="1"
+				        android:text="Large Text"
+				        android:textAppearance="?android:attr/textAppearanceLarge" />
+				
+				    <TextView
+				        android:id="@+id/title_detailed"
+				        android:layout_width="fill_parent"
+				        android:layout_height="wrap_content"
+				        android:layout_margin="5dp"
+				        android:layout_marginTop="0dp"
+				        android:minLines="2"
+				        android:layout_alignParentLeft="true"
+				        android:layout_below="@id/code_detailed"
+				        android:ellipsize="marquee"
+				        android:marqueeRepeatLimit="marquee_forever"
+				        android:text="Large Text"
+				        android:textSize="30dp" />
+				    
+				    <TextView
+				        android:id="@+id/slot_detailed"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:layout_margin="5dp"
+				        android:layout_alignLeft="@+id/title_detailed"
+				        android:layout_below="@+id/title_detailed"
+				        android:text="Medium Text"
+				        android:textAppearance="?android:attr/textAppearanceMedium" />
+				    
+				    <TextView
+				        android:id="@+id/type_detailed"
+				        android:layout_width="wrap_content"
+				        android:layout_margin="5dp"
+				        android:layout_height="wrap_content"
+				        android:layout_alignRight="@+id/title_detailed"
+				        android:layout_below="@+id/title_detailed"
+				        android:text="Medium Text"
+				        android:textAppearance="?android:attr/textAppearanceMedium" />
+				
+				    <LinearLayout 
+				        android:id="@+id/progress_layout"
+				        android:layout_width="fill_parent"
+				        android:layout_height="wrap_content"
+				        android:orientation="horizontal"
+				        android:layout_below="@+id/type_detailed"
+				        android:layout_centerHorizontal="true">
+
+							    <ProgressBar
+							        android:id="@+id/progressBar_detailed"
+							        style="?android:attr/progressBarStyleHorizontal"
+							        android:layout_width="wrap_content"
+							        android:layout_height="wrap_content"
+							        android:layout_margin="10dp"
+							        android:layout_weight="1" />
+							    
+							    <TextView
+							        android:id="@+id/net_per"
+							        android:layout_width="wrap_content"
+							        android:layout_height="wrap_content"
+							        android:layout_weight="0"
+							        android:text="99%"
+							        android:textSize="30dp" />
+				    
+				    
+				    </LinearLayout>
+				    
+				    <RelativeLayout
+				        android:layout_width="fill_parent"
+				        android:layout_height="wrap_content"
+				        android:layout_below="@id/progress_layout" >
+
+							    <TextView
+							        android:id="@+id/atten_detailed"
+							        android:layout_margin="5dp"
+							        android:layout_width="wrap_content"
+							        android:layout_height="wrap_content"
+							        android:layout_below="@+id/progressBar_detailed"
+							        android:layout_centerHorizontal="true"
+							        android:text="TextView" />
+														
+							    <TextView
+							        android:id="@+id/bunk_detailed"
+							        android:layout_width="fill_parent"
+							        android:layout_height="wrap_content"
+							        android:layout_alignLeft="@+id/slot_detailed"
+							        android:layout_below="@+id/atten_detailed"
+							        android:layout_margin="5dp"
+							        android:layout_marginTop="20dp"
+							        android:layout_toLeftOf="@+id/numberPicker_bunk"
+							        android:text="TextView" />
+							
+							    <NumberPicker
+							        android:id="@+id/numberPicker_bunk"
+							        android:layout_width="80dp"
+							        android:layout_height="wrap_content"
+							        android:layout_alignParentRight="true"
+							        android:layout_margin="5dp"
+							        android:layout_alignTop="@+id/bunk_detailed" />
+							    
+							    <TextView
+							        android:id="@+id/makeup_detailed"
+							        android:layout_width="fill_parent"
+							        android:layout_height="wrap_content"
+							        android:layout_alignLeft="@+id/slot_detailed"
+							        android:layout_below="@+id/numberPicker_bunk"
+							        android:layout_margin="5dp"
+							        android:layout_marginTop="20dp"
+							        android:layout_toLeftOf="@+id/numberPicker_makeup"
+							        android:text="TextView" />
+							
+							    <NumberPicker
+							        android:id="@+id/numberPicker_makeup"
+							        android:layout_width="80dp"
+							        android:layout_height="wrap_content"
+							        android:layout_alignParentRight="true"
+							        android:layout_margin="5dp"
+							        android:layout_alignTop="@+id/makeup_detailed" />
+							    </RelativeLayout>
+
+				    </RelativeLayout>
+
+    </ScrollView>
+
+    
+
+</RelativeLayout>
