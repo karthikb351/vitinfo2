@@ -16,8 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.karthikb351.vitinfotest.R;
-
 public class SubjectAdapter extends ArrayAdapter {
 	
       private int resource;
@@ -66,10 +64,6 @@ public class SubjectAdapter extends ArrayAdapter {
 	       	ShapeDrawable pgDrawable = new ShapeDrawable(new RoundRectShape(x, null,null));
 	       	pgDrawable.getPaint().setColor(c);
 	       	ClipDrawable progress = new ClipDrawable(pgDrawable, Gravity.LEFT, ClipDrawable.HORIZONTAL);
-	       	 
-	       	 
-	       	 
-	       	 
 	       	pg.setProgressDrawable(progress);
 	       	pg.setBackgroundDrawable(this.getContext().getResources().getDrawable(R.drawable.progress_green));
 	       	pg.setMax(a);

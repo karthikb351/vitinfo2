@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World, VITinfo2Activity!</string>
-    <string name="app_name">VITinfo2</string>
+    <string name="app_name">VITinfo</string>
+    <string name="about_info">VITinfo is an unofficial mobile wrapper for VIT\'s Academics portal.\nAll information is stored locally on your device. No data is stored on our servers\n\n</string>
+    <string name="about_footer">If you would like to contribute to exciting future developments/projects,</string>
 
 </resources>

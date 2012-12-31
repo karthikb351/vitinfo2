@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
     android:padding="10dp">
     
     <ScrollView
@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true" >
 
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
 				        
 				    
@@ -88,64 +88,119 @@
 				    
 				    
 				    </LinearLayout>
-				    
+				    
 				    <RelativeLayout
 				        android:layout_width="fill_parent"
 				        android:layout_height="wrap_content"
 				        android:layout_below="@id/progress_layout" >
 
-							    <TextView
-							        android:id="@+id/atten_detailed"
-							        android:layout_margin="5dp"
-							        android:layout_width="wrap_content"
-							        android:layout_height="wrap_content"
-							        android:layout_below="@+id/progressBar_detailed"
-							        android:layout_centerHorizontal="true"
-							        android:text="TextView" />
-														
-							    <TextView
-							        android:id="@+id/bunk_detailed"
-							        android:layout_width="fill_parent"
-							        android:layout_height="wrap_content"
-							        android:layout_alignLeft="@+id/slot_detailed"
-							        android:layout_below="@+id/atten_detailed"
-							        android:layout_margin="5dp"
-							        android:layout_marginTop="20dp"
-							        android:layout_toLeftOf="@+id/numberPicker_bunk"
-							        android:text="TextView" />
-							
-							    <NumberPicker
-							        android:id="@+id/numberPicker_bunk"
-							        android:layout_width="80dp"
-							        android:layout_height="wrap_content"
-							        android:layout_alignParentRight="true"
-							        android:layout_margin="5dp"
-							        android:layout_alignTop="@+id/bunk_detailed" />
-							    
-							    <TextView
-							        android:id="@+id/makeup_detailed"
-							        android:layout_width="fill_parent"
-							        android:layout_height="wrap_content"
-							        android:layout_alignLeft="@+id/slot_detailed"
-							        android:layout_below="@+id/numberPicker_bunk"
-							        android:layout_margin="5dp"
-							        android:layout_marginTop="20dp"
-							        android:layout_toLeftOf="@+id/numberPicker_makeup"
-							        android:text="TextView" />
-							
-							    <NumberPicker
-							        android:id="@+id/numberPicker_makeup"
-							        android:layout_width="80dp"
-							        android:layout_height="wrap_content"
-							        android:layout_alignParentRight="true"
-							        android:layout_margin="5dp"
-							        android:layout_alignTop="@+id/makeup_detailed" />
-							    </RelativeLayout>
+						        <TextView
+						            android:id="@+id/atten_detailed"
+						            android:layout_width="wrap_content"
+						            android:layout_height="wrap_content"
+						            android:layout_below="@+id/progressBar_detailed"
+						            android:layout_centerHorizontal="true"
+						            android:layout_margin="5dp"
+						            android:text="TextView" />
+				
+								<LinearLayout
+								    android:layout_width="fill_parent"
+								    android:layout_height="wrap_content"
+								    android:layout_below="@+id/atten_detailed"
+								    android:orientation="horizontal" >
+		
+										<LinearLayout
+										    android:layout_width="fill_parent"
+										    android:layout_height="wrap_content"
+										    android:layout_gravity="center_vertical"
+										    android:layout_weight="30"
+										    android:orientation="vertical" >
 
+										        <TextView
+										            android:id="@+id/bunk_detailed"
+										            android:layout_width="fill_parent"
+										            android:layout_height="wrap_content"
+										            android:layout_margin="5dp"
+										            android:layout_marginTop="20dp"
+										            android:text="TextView" />
+					
+										        <TextView
+										            android:id="@+id/makeup_detailed"
+										            android:layout_width="fill_parent"
+										            android:layout_height="wrap_content"
+										            android:layout_margin="5dp"
+										            android:layout_marginTop="20dp"
+										            android:text="TextView" />
+								        </LinearLayout>
+
+								        <LinearLayout
+								            android:layout_width="fill_parent"
+								            android:layout_height="wrap_content"
+								            android:layout_weight="70"
+								            android:orientation="vertical" >
+										    
+									            <LinearLayout
+									                android:id="@+id/bunk_picker"
+									                android:layout_width="fill_parent"
+									                android:layout_height="wrap_content"
+									                android:orientation="horizontal"
+									                android:layout_alignParentTop="true" >
+															    <Button
+													                android:id="@+id/bunk_sub"
+													                android:layout_width="fill_parent"
+													                android:layout_height="wrap_content"
+													                android:layout_weight="0.33"
+													                android:text="-" />
+							
+													            <TextView
+													                android:id="@+id/bunk_val"
+													                android:layout_width="fill_parent"
+													                android:layout_height="wrap_content"
+													                android:layout_weight="0.33"
+													                android:gravity="center_horizontal"
+													                android:text="3" />
+							
+													            <Button
+													                android:id="@+id/bunk_add"
+													                android:layout_width="fill_parent"
+													                android:layout_height="wrap_content"
+													                android:layout_weight="0.33"
+													                android:text="+" />
+											    </LinearLayout>
+									            						
+									            <LinearLayout
+									                android:id="@+id/makeup_picker"
+									                android:layout_width="fill_parent"
+									                android:layout_height="wrap_content"
+									                android:orientation="horizontal">
+			
+													            <Button
+													                android:id="@+id/makeup_sub"
+													                android:layout_width="fill_parent"
+													                android:layout_height="wrap_content"
+														            android:layout_weight="0.33"
+	
+													                android:text="-" />
+							
+													            <TextView
+													                android:id="@+id/makeup_val"
+													                android:layout_width="fill_parent"
+													                android:layout_height="wrap_content"
+													                android:layout_weight="0.33"
+													                android:gravity="center_horizontal"
+													                android:text="5" />
+							
+													            <Button
+													                android:id="@+id/makeup_add"
+													                android:layout_width="fill_parent"
+													                android:layout_height="wrap_content"
+													                android:layout_weight="0.33"
+													                android:text="+" />
+											            
+									            </LinearLayout>
+								        </LinearLayout>
+						        </LinearLayout>
 				    </RelativeLayout>
-
-    </ScrollView>
-
-    
-
+			</RelativeLayout>
+		</ScrollView>
 </RelativeLayout>

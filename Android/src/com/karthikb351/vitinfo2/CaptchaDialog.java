@@ -29,8 +29,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.karthikb351.vitinfotest.R;
-
 public class CaptchaDialog extends Activity {
 	
 	SharedPreferences settings;

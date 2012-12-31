@@ -15,18 +15,17 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.karthikb351.vitinfotest.R;
 
 public class MainActivity extends Activity {
 	
@@ -43,41 +42,47 @@ public class MainActivity extends Activity {
     	setContentView(R.layout.main);
     	settings = getSharedPreferences("vitinfotest", 0);
     	listViewSub=(ListView)findViewById(R.id.list);
-    	Button a=(Button)findViewById(R.id.button_atten);
-    	Button l=(Button)findViewById(R.id.button_login);
-    	
-    	a.setOnClickListener(ocl);
-    	l.setOnClickListener(ocl);
     	loadAtten();
     }
     
-    OnClickListener ocl = new OnClickListener() {
-		
-		@Override
-		public void onClick(View v) {
-			
-			switch(v.getId())
-			{
-				case R.id.button_atten:
-			
-					if(!settings.getBoolean("credentials", false))
-						loginDialog();
-					else
-					{
-						Intent i = new Intent(getApplicationContext(),CaptchaDialog.class);
-						i.putExtra("newuser", false);
-					    startActivityForResult(i,1);
-					}
-					break;
-				
-				case R.id.button_login:
-					
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+    
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	
+        switch (item.getItemId()) {
+        	case R.id.about:
+        		startActivity(new Intent(this, About.class));
+        		return true;
+        	
+        	case R.id.refresh:
+        		if(!settings.getBoolean("credentials", false))
 					loginDialog();
-					break;
-			}
-			 
-		}
-	};
+				else
+				{
+					Intent i = new Intent(getApplicationContext(),CaptchaDialog.class);
+					i.putExtra("newuser", false);
+				    startActivityForResult(i,1);
+				}
+        		return true;
+        	case R.id.details:
+        		loginDialog();
+				return true;
+        	case R.id.share:
+        		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        		sharingIntent.setType("text/plain");
+        		String shareBody = "Check your VIT Attendance on your android phone! http://play.google.com/store/apps/details?id=com.karthikb351.vitinfo2";
+        		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        		startActivity(Intent.createChooser(sharingIntent, "Spread the bunking via"));
+        		return true;
+        	default:
+        		return super.onOptionsItemSelected(item);
+        }
+    }
+ 
     void savedToSharedPrefs(String source)
     {
     	editor=settings.edit();
@@ -119,16 +124,25 @@ public class MainActivity extends Activity {
 		
     }
     
+    void loadCaptcha()
+    {
+    	Intent i = new Intent(getApplicationContext(),CaptchaDialog.class);
+		i.putExtra("newuser", true);
+	    startActivityForResult(i,1);
+    }
+    
     void loadAtten()
     {
     	if(settings.getBoolean("newuser", true))
     	{
-    		loginDialog();
     		if(settings.getBoolean("credentials", false))
     		{
-        		Intent i = new Intent(getApplicationContext(),CaptchaDialog.class);
-        		i.putExtra("newuser", true);
-    		    startActivityForResult(i,1);
+        		loadCaptcha();
+    		}
+    		else
+    		{
+    			Toast.makeText(MainActivity.this, "Please enter your credentials first", Toast.LENGTH_SHORT).show();
+    			loginDialog();
     		}
     	}
     	else
@@ -177,7 +191,7 @@ public class MainActivity extends Activity {
         View popup=inflator.inflate(R.layout.details_popup, null);
         editor=settings.edit();
         String loadregno=settings.getString("regno", null);
-        int loaddiagyy=settings.getInt("dobyy", 2012);
+        int loaddiagyy=settings.getInt("dobyy", 1990);
         int loaddiagmm=settings.getInt("dobmm", 12);
         int loaddiagdd=settings.getInt("dobdd", 21);
         final EditText edit=(EditText)popup.findViewById(R.id.diagRegno);
@@ -227,6 +241,8 @@ public class MainActivity extends Activity {
     		editor.putString("dob", DOB);
     		editor.putBoolean("credentials", true);
     		editor.commit();
+    		if(settings.getBoolean("newuser", true))
+    				loadCaptcha();
     	}
     }
 	

@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.karthikb351.vitinfotest"
-    android:versionCode="2"
-    android:versionName="alpha.v2" >
+    package="com.karthikb351.vitinfo2"
+    android:versionCode="3"
+    android:versionName="alpha.v3" >
 
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="10"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/app_icon"
         android:label="@string/app_name" >
         <activity
+            android:theme="@android:style/Theme.Light"
             android:name="com.karthikb351.vitinfo2.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
@@ -21,15 +22,23 @@
             </intent-filter>
         </activity>
         <activity
+            android:theme="@android:style/Theme.Dialog"
             android:name="com.karthikb351.vitinfo2.CaptchaDialog"
             android:label="Enter Captcha"
             android:screenOrientation="portrait">
         </activity>
-        <activity 
+        <activity
+            android:theme="@android:style/Theme.Light"
             android:name="com.karthikb351.vitinfo2.SubjectDetails"
             android:label="Subject Details"
             android:screenOrientation="portrait">
             
+        </activity>
+        <activity
+            android:theme="@android:style/Theme.Dialog"
+            android:name="com.karthikb351.vitinfo2.About"
+            android:label="About VITinfo"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

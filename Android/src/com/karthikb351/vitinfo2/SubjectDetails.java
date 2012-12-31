@@ -1,7 +1,5 @@
 package com.karthikb351.vitinfo2;
 
-import com.karthikb351.vitinfotest.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,10 +10,13 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.widget.NumberPicker;
-import android.widget.NumberPicker.OnValueChangeListener;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 
 public class SubjectDetails extends Activity {
 	
@@ -25,11 +26,11 @@ public class SubjectDetails extends Activity {
 		cl_orange=Color.parseColor("#FF8300");
 	SharedPreferences settings;
 	String title,code,type,slot,nbr;
-	
-	int max, atten,count=1,size,pos,globe_makeup,globe_bunk;
-	TextView tv_title,tv_slot,tv_type,tv_code,tv_atten,tv_bunk_info,tv_net_per,tv_makeup_info;
+	boolean progFlag=false;
+	int max, atten,count=1,size,pos,globe_makeup,globe_bunk,prev_bunk,prev_makeup;
+	TextView tv_title,tv_slot,tv_type,tv_code,tv_atten,tv_bunk_info,tv_net_per,tv_makeup_info,bunk_val,makeup_val;
 	ProgressBar progBar;
-	NumberPicker np_bunk, np_makeup;
+	Button bunk_add,bunk_sub, makeup_add, makeup_sub;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -44,17 +45,20 @@ public class SubjectDetails extends Activity {
 		tv_bunk_info=(TextView)findViewById(R.id.bunk_detailed);
 		tv_net_per=(TextView)findViewById(R.id.net_per);
 		tv_makeup_info=(TextView)findViewById(R.id.makeup_detailed);
+		bunk_val=(TextView)findViewById(R.id.bunk_val);
+		makeup_val=(TextView)findViewById(R.id.makeup_val);
 		progBar=(ProgressBar)findViewById(R.id.progressBar_detailed);
-		np_bunk=(NumberPicker)findViewById(R.id.numberPicker_bunk);
-		np_makeup=(NumberPicker)findViewById(R.id.numberPicker_makeup);
-		np_bunk.setMinValue(0);
-		np_bunk.setMaxValue(30);
-		np_makeup.setMinValue(0);
-		np_makeup.setMaxValue(30);
-		np_bunk.setOnValueChangedListener(ovcl);
-		np_makeup.setOnValueChangedListener(ovcl);
-		np_bunk.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-		np_makeup.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+		bunk_add=(Button)findViewById(R.id.bunk_add);
+		bunk_sub=(Button)findViewById(R.id.bunk_sub);
+		makeup_add=(Button)findViewById(R.id.makeup_add);
+		makeup_sub=(Button)findViewById(R.id.makeup_sub);
+		
+		bunk_add.setOnClickListener(ocl);
+		bunk_sub.setOnClickListener(ocl);
+		makeup_add.setOnClickListener(ocl);
+		makeup_sub.setOnClickListener(ocl);
+
+		
 		settings = getSharedPreferences("vitinfotest", 0);
 		Intent i=getIntent();
 		pos=i.getIntExtra("index", -1);
@@ -65,34 +69,59 @@ public class SubjectDetails extends Activity {
 		
 	}
 	
-	OnValueChangeListener ovcl = new OnValueChangeListener() {
+	OnClickListener ocl = new OnClickListener() {
 		
 		@Override
-		public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
 			
-			switch(picker.getId())
+			switch (v.getId())
 			{
-				case R.id.numberPicker_bunk:
-					onBunk(newVal);
+				case R.id.bunk_add:
+					onBunk(true);
 					break;
-				case R.id.numberPicker_makeup:
-					onMakeup(newVal);
+				case R.id.bunk_sub:
+					if(globe_bunk!=0)
+						onBunk(false);
+					break;
+				case R.id.makeup_add:
+					onMakeup(true);
+					break;
+				case R.id.makeup_sub:
+					if(globe_makeup!=0)
+						onMakeup(false);
 					break;
 			}
 			
 		}
 	};
 	
-	void onBunk(int a)
+	void onBunk(boolean f)
 	{
-		globe_bunk=a;
-		tv_bunk_info.setText("If you miss "+a+" more class(s)");
+		if(f)
+			globe_bunk++;
+		else
+			globe_bunk--;
+		if(globe_bunk<0)
+		{
+			globe_bunk=0;
+		}
+		if(globe_bunk==10)
+			Toast.makeText(SubjectDetails.this, "DISCLAIMER:We hold no responsibility if you get debarred!", Toast.LENGTH_SHORT).show();
+		tv_bunk_info.setText("If you miss "+globe_bunk+" more class(s)");
+		bunk_val.setText(String.valueOf(globe_bunk));
 		update();
 	}
-	void onMakeup(int a)
+	void onMakeup(boolean f)
 	{
-		globe_makeup=a;
-		tv_makeup_info.setText("If you attend "+a+" more class(s)");
+		if(f)
+			globe_makeup++;
+		else
+			globe_makeup--;
+		if(globe_makeup<0)
+			globe_makeup=0;
+		tv_makeup_info.setText("If you attend "+globe_makeup+" more class(s)");
+		makeup_val.setText(String.valueOf(globe_makeup));
 		update();
 	}
 	
@@ -102,6 +131,7 @@ public class SubjectDetails extends Activity {
 		float per=getPer(t_atten, t_max);
 		tv_net_per.setText(String.valueOf(per)+"%");
 		tv_net_per.setTextColor(getColor(t_atten, t_max));
+		Log.i("color", String.valueOf(getColor(t_atten, t_max)));
        	float x[]={5,5,5,5,5,5,5,5};
        	ShapeDrawable pgDrawable = new ShapeDrawable(new RoundRectShape(x, null,null));
        	pgDrawable.getPaint().setColor(getColor(t_atten, t_max));
@@ -143,7 +173,7 @@ public class SubjectDetails extends Activity {
 	int getColor(int num, int div)
 	{
 		float a=getPer(num,div);
-		int c;
+		int c=cl_green;
        	if(a<80&&a>=75)
        		c=cl_orange;
        	else if(a<75)
@@ -161,6 +191,8 @@ public class SubjectDetails extends Activity {
 		tv_code.setText(code);
 		tv_bunk_info.setText("If you miss 0 more class(s)");
 		tv_makeup_info.setText("If you attend 0 more class(s)");
+		bunk_val.setText("0");
+		makeup_val.setText("0");
 		float per=getPer(atten,max);
 
 		tv_net_per.setText(String.valueOf(per)+"%");

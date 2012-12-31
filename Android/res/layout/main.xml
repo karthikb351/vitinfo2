@@ -3,26 +3,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
-
-        <LinearLayout 
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        	<Button
-            android:id="@+id/button_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:text="Login Details" />
-
-           <Button
-	            android:id="@+id/button_atten"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_weight=".5"
-	            android:text="Get Attendance" />
-            
-        </LinearLayout>
         
            <ListView
                 android:id="@+id/list"
