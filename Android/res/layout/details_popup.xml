@@ -36,7 +36,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="5dp"
         android:keepScreenOn="true"
-        android:endYear="1995"/>
+        android:endYear="2015"/>
 
  
 

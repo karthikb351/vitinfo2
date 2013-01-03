@@ -76,7 +76,6 @@ public class CaptchaDialog extends Activity {
 				case DialogInterface.BUTTON_POSITIVE:
 					captcha_edittext=(EditText)(view.findViewById(R.id.captcha_edittext));
 					captcha=captcha_edittext.getText().toString();
-					Toast.makeText(CaptchaDialog.this, captcha, Toast.LENGTH_SHORT).show();
 					submitCaptcha();
 					break;
 				case DialogInterface.BUTTON_NEGATIVE:

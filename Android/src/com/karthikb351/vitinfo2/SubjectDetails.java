@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
@@ -23,12 +24,12 @@ public class SubjectDetails extends Activity {
 	
 	int cl_red=Color.parseColor("#FF0000"),
 		cl_green=Color.parseColor("#00AF33"),
-		cl_orange=Color.parseColor("#FF8300");
+		cl_amber=Color.parseColor("#FF8300");
 	SharedPreferences settings;
 	String title,code,type,slot,nbr;
 	boolean progFlag=false;
-	int max, atten,count=1,size,pos,globe_makeup,globe_bunk,prev_bunk,prev_makeup;
-	TextView tv_title,tv_slot,tv_type,tv_code,tv_atten,tv_bunk_info,tv_net_per,tv_makeup_info,bunk_val,makeup_val;
+	int max, atten,count=1,size,pos,globe_makeup,globe_bunk,prev_bunk,prev_makeup,class_offset;
+	TextView tv_title,tv_slot,tv_type,tv_code,tv_atten,tv_net_per,bunk_val,makeup_val;
 	ProgressBar progBar;
 	Button bunk_add,bunk_sub, makeup_add, makeup_sub;
 	@Override
@@ -42,9 +43,7 @@ public class SubjectDetails extends Activity {
 		tv_code=(TextView)findViewById(R.id.code_detailed);
 		tv_type=(TextView)findViewById(R.id.type_detailed);
 		tv_atten=(TextView)findViewById(R.id.atten_detailed);
-		tv_bunk_info=(TextView)findViewById(R.id.bunk_detailed);
 		tv_net_per=(TextView)findViewById(R.id.net_per);
-		tv_makeup_info=(TextView)findViewById(R.id.makeup_detailed);
 		bunk_val=(TextView)findViewById(R.id.bunk_val);
 		makeup_val=(TextView)findViewById(R.id.makeup_val);
 		progBar=(ProgressBar)findViewById(R.id.progressBar_detailed);
@@ -99,29 +98,27 @@ public class SubjectDetails extends Activity {
 	void onBunk(boolean f)
 	{
 		if(f)
-			globe_bunk++;
+			globe_bunk+=class_offset;
 		else
-			globe_bunk--;
+			globe_bunk-=class_offset;
 		if(globe_bunk<0)
 		{
 			globe_bunk=0;
 		}
 		if(globe_bunk==10)
 			Toast.makeText(SubjectDetails.this, "DISCLAIMER:We hold no responsibility if you get debarred!", Toast.LENGTH_SHORT).show();
-		tv_bunk_info.setText("If you miss "+globe_bunk+" more class(s)");
-		bunk_val.setText(String.valueOf(globe_bunk));
+		bunk_val.setText("If you miss "+globe_bunk+" more class(s)");
 		update();
 	}
 	void onMakeup(boolean f)
 	{
 		if(f)
-			globe_makeup++;
+			globe_makeup+=class_offset;
 		else
-			globe_makeup--;
+			globe_makeup-=class_offset;
 		if(globe_makeup<0)
 			globe_makeup=0;
-		tv_makeup_info.setText("If you attend "+globe_makeup+" more class(s)");
-		makeup_val.setText(String.valueOf(globe_makeup));
+		makeup_val.setText("If you attend "+globe_makeup+" more class(s)");
 		update();
 	}
 	
@@ -132,23 +129,28 @@ public class SubjectDetails extends Activity {
 		tv_net_per.setText(String.valueOf(per)+"%");
 		tv_net_per.setTextColor(getColor(t_atten, t_max));
 		Log.i("color", String.valueOf(getColor(t_atten, t_max)));
-       	float x[]={5,5,5,5,5,5,5,5};
-       	ShapeDrawable pgDrawable = new ShapeDrawable(new RoundRectShape(x, null,null));
-       	pgDrawable.getPaint().setColor(getColor(t_atten, t_max));
-       	ClipDrawable progress = new ClipDrawable(pgDrawable, Gravity.LEFT, ClipDrawable.HORIZONTAL);
-       	
-       	progBar.setProgressDrawable(progress);
+		Rect bounds = progBar.getProgressDrawable().getBounds();
+		if(per<80&&per>=75)
+			progBar.setProgressDrawable(SubjectDetails.this.getResources().getDrawable(R.drawable.progress_amber));//Amber
+       	else if(per<75)
+       		progBar.setProgressDrawable(SubjectDetails.this.getResources().getDrawable(R.drawable.progress_red));//Red
+       	else
+       		progBar.setProgressDrawable(SubjectDetails.this.getResources().getDrawable(R.drawable.progress_green));//Green
+
+		progBar.getProgressDrawable().setBounds(bounds);
        	progBar.setMax(t_max);
-       	progBar.setProgress(t_atten);
+        progBar.setProgress(t_atten);
+        progBar.setProgress(progBar.getProgress()+1);
+        progBar.setProgress(progBar.getProgress()-1);
 		
 		if(globe_makeup==0&&globe_bunk==0)
 		{
-			tv_atten.setText("You have attended "+per+"% ("+t_atten+" out of "+t_max+") of your classes");
+			tv_atten.setText("You have attended "+t_atten+" out of "+t_max+" classes");
 		}
 
 		else
 		{
-			tv_atten.setText("You would have attended "+per+"% ("+t_atten+" out of "+t_max+") of your classes");
+			tv_atten.setText("You would have attended "+t_atten+" out of "+t_max+" classes");
 		}
 	}
 	
@@ -162,8 +164,14 @@ public class SubjectDetails extends Activity {
 		slot=settings.getString("Sub_"+nbr+"slot","DB Error");
 		atten=settings.getInt("Sub_"+nbr+"atten",0); 
 		max=settings.getInt("Sub_"+nbr+"max",0);
+		class_offset = 1;
+		if(type.contains("Lab"))
+		for( int i=0; i<slot.length(); i++ ) {
+		    if( slot.charAt(i) == '+' ) {
+		        class_offset++;
+		    } 
+		}
 		Log.i("details:",code+title+slot);
-		
 	}
 	
 	float getPer(int num, int div)
@@ -175,7 +183,7 @@ public class SubjectDetails extends Activity {
 		float a=getPer(num,div);
 		int c=cl_green;
        	if(a<80&&a>=75)
-       		c=cl_orange;
+       		c=cl_amber;
        	else if(a<75)
        		c=cl_red;
        	else
@@ -189,26 +197,31 @@ public class SubjectDetails extends Activity {
 		tv_slot.setText(slot);
 		tv_type.setText(type);
 		tv_code.setText(code);
-		tv_bunk_info.setText("If you miss 0 more class(s)");
-		tv_makeup_info.setText("If you attend 0 more class(s)");
+		bunk_val.setText("If you miss 0 more class(s)");
+		makeup_val.setText("If you attend 0 more class(s)");
 		bunk_val.setText("0");
 		makeup_val.setText("0");
 		float per=getPer(atten,max);
 
 		tv_net_per.setText(String.valueOf(per)+"%");
 		tv_net_per.setTextColor(getColor(atten, max));
-       	
 		float x[]={5,5,5,5,5,5,5,5};
        	ShapeDrawable pgDrawable = new ShapeDrawable(new RoundRectShape(x, null,null));
-       	pgDrawable.getPaint().setColor(getColor(atten, max));
+       	pgDrawable.getPaint().setColor(getColor(atten,max));
        	ClipDrawable progress = new ClipDrawable(pgDrawable, Gravity.LEFT, ClipDrawable.HORIZONTAL);
-       	
        	progBar.setProgressDrawable(progress);
-       	progBar.setBackgroundDrawable(SubjectDetails.this.getResources().getDrawable(R.drawable.progress_green));
+		if(per<80&&per>=75)
+			progBar.setBackgroundDrawable(SubjectDetails.this.getResources().getDrawable(R.drawable.progress_amber));//Amber
+       	else if(per<75)
+       		progBar.setBackgroundDrawable(SubjectDetails.this.getResources().getDrawable(R.drawable.progress_red));//Red
+       	else
+       		progBar.setBackgroundDrawable(SubjectDetails.this.getResources().getDrawable(R.drawable.progress_green));//Green
        	progBar.setMax(max);
-       	progBar.setProgress(atten);
-		
-		tv_atten.setText("You have attended "+per+"% ("+atten+" out of "+max+") of your classes");
+        progBar.setProgress(0);
+        progBar.invalidate();
+        progBar.setProgress(atten);
+        tv_atten.setText("You have attended "+per+"% ("+atten+" out of "+max+") of your classes");
+        update();
 		
 	}
 	
