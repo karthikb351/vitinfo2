@@ -1,5 +1,7 @@
 package com.karthikb351.vitinfo2;
 
+import com.karthikb351.vitinfo2.R;
+
 
 public class Subject {
 

@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.karthikb351.vitinfo2.R;
 
 
 public class SubjectDetails extends Activity {
@@ -140,7 +141,7 @@ public class SubjectDetails extends Activity {
 		progBar.getProgressDrawable().setBounds(bounds);
        	progBar.setMax(t_max);
         progBar.setProgress(t_atten);
-        progBar.setProgress(progBar.getProgress()+1);
+        progBar.setProgress(progBar.getProgress()+2);
         progBar.setProgress(progBar.getProgress()-1);
 		
 		if(globe_makeup==0&&globe_bunk==0)
@@ -199,8 +200,6 @@ public class SubjectDetails extends Activity {
 		tv_code.setText(code);
 		bunk_val.setText("If you miss 0 more class(s)");
 		makeup_val.setText("If you attend 0 more class(s)");
-		bunk_val.setText("0");
-		makeup_val.setText("0");
 		float per=getPer(atten,max);
 
 		tv_net_per.setText(String.valueOf(per)+"%");

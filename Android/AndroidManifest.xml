@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.karthikb351.vitinfo2"
-    android:versionCode="7"
-    android:versionName="alpha.v7" >
+    android:versionCode="8"
+    android:versionName="alpha.v8" >
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -15,7 +15,8 @@
         <activity
             android:name="com.karthikb351.vitinfo2.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/LightThemeSelector" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,18 +26,33 @@
         <activity
             android:name="com.karthikb351.vitinfo2.CaptchaDialog"
             android:label="Enter Captcha"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/LightThemeSelector">
+        </activity>
+        <activity
+            android:name="com.karthikb351.vitinfo2.DownloadAttendance"
+            android:label="Getting Attendance"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightThemeSelector">
+        </activity>
+        <activity
+            android:name="com.karthikb351.vitinfo2.GetAttendance"
+            android:label="Getting Attendance"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightThemeSelector">
         </activity>
         <activity
             android:name="com.karthikb351.vitinfo2.SubjectDetails"
             android:label="Subject Details"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/LightThemeSelector">
             
         </activity>
         <activity
             android:name="com.karthikb351.vitinfo2.About"
             android:label="About VITinfo"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/LightThemeSelector">
         </activity>
         
         <!-- Start of Crittercism.com Code -->

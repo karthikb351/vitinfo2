@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.crittercism.app.Crittercism;
 import com.helpshift.Helpshift;
+import com.karthikb351.vitinfo2.R;
 
 public class MainActivity extends Activity {
 	
@@ -95,8 +96,7 @@ public class MainActivity extends Activity {
 					loginDialog();
 				else
 				{
-					Intent i = new Intent(getApplicationContext(),CaptchaDialog.class);
-					i.putExtra("newuser", false);
+					Intent i = new Intent(getApplicationContext(),GetAttendance.class);
 				    startActivityForResult(i,1);
 				}
         		return true;
@@ -115,7 +115,7 @@ public class MainActivity extends Activity {
         }
     }
  
-    void savedToSharedPrefs(String source)
+    void saveAttenToSharedPrefs(String source)
     {
     	editor=settings.edit();
     	String title,code,type,slot,nbr,regdate;
@@ -164,12 +164,55 @@ public class MainActivity extends Activity {
 		
     }
     
-    void loadCaptcha()
+    void saveMarksToSharedPrefs(String source)
     {
-    	Intent i = new Intent(getApplicationContext(),CaptchaDialog.class);
-		i.putExtra("newuser", true);
-	    startActivityForResult(i,1);
+    	editor=settings.edit();
+    	String title,code,type,slot,nbr,regdate;
+		int max, atten,count=1;
+        List listSub= new ArrayList();
+        Document doc=Jsoup.parse(source);
+        Elements elements = doc.getElementsByTag("tr");
+        editor.putInt("Sub_size",elements.size()/10);
+        for(int i=1;i<elements.size();)
+		{
+        	nbr=String.valueOf(count);
+			elements.get(i++).ownText();
+			code=elements.get(i++).ownText();
+			editor.putString("Sub_"+nbr+"code",code); 
+			title=elements.get(i++).ownText();
+			editor.putString("Sub_"+nbr+"title",title); 
+			type=elements.get(i++).ownText();
+			editor.putString("Sub_"+nbr+"type",type); 
+			slot=elements.get(i++).ownText();
+			editor.putString("Sub_"+nbr+"slot",slot);
+			regdate=elements.get(i++).ownText();
+			editor.putString("Sub_"+nbr+"regdate",regdate);
+			atten=Integer.parseInt(elements.get(i++).ownText());
+			editor.putInt("Sub_"+nbr+"atten",atten); 
+			max=Integer.parseInt(elements.get(i++).ownText());
+			editor.putInt("Sub_"+nbr+"max",max); 
+			elements.get(i++).ownText();
+			elements.get(i++).ownText();
+			
+			Log.i("stored:",title+" "+code+" "+slot);
+			listSub.add(new Subject(title, code, type, slot, max, atten));
+			count++;
+		}
+        editor.putBoolean("newuser", false);
+        Time today = new Time(Time.getCurrentTimezone());
+        today.setToNow();
+        String update="Last refreshed on "+today.monthDay+"/"+today.month+1+"/"+today.year+" at "+today.format("%k:%M:%S");
+        editor.putString("updateOn", update);
+        editor.commit();
+        listViewSub.setOnItemClickListener(otcl);
+    	tv.setText(settings.getString("updateOn", "Last Update not saved. Go to Menu->Refresh"));
+        listViewSub.setAdapter( new SubjectAdapter(MainActivity.this, R.layout.single_item, listSub ) );
+        
+        
+        
+		
     }
+    	
     
     void loadAtten()
     {
@@ -177,7 +220,9 @@ public class MainActivity extends Activity {
     	{
     		if(settings.getBoolean("credentials", false))
     		{
-        		loadCaptcha();
+    			Intent i = new Intent(getApplicationContext(),GetAttendance.class);
+    			i.putExtra("newuser", true);
+    		    startActivityForResult(i,1);
     		}
     		else
     		{
@@ -283,7 +328,7 @@ public class MainActivity extends Activity {
     		editor.putBoolean("credentials", true);
     		editor.commit();
     		if(settings.getBoolean("newuser", true))
-    				loadCaptcha();
+    				loadAtten();
     	}
     }
 	
@@ -312,21 +357,39 @@ public class MainActivity extends Activity {
     	{
     		if(resultCode == RESULT_OK)
     		{
-    			savedToSharedPrefs(result);
+    			saveAttenToSharedPrefs(result);
         		Toast.makeText(MainActivity.this, "Success! Booyeah!", Toast.LENGTH_SHORT).show();
     			
     		}
+	    	if (resultCode == RESULT_CANCELED)
+	    	{
+	    		if(result.equals("error"))
+	    		Toast.makeText(MainActivity.this, "Error fetching Attendance", Toast.LENGTH_SHORT).show();
+	    		else if(result.equals("redirect"))
+	    		Toast.makeText(MainActivity.this, "Incorrect Captcha", Toast.LENGTH_SHORT).show();
+	    		else
+	    			Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+	    		
+	    	}
     	}
-
-    	if (resultCode == RESULT_CANCELED)
+    	else if(requestCode == 2)
     	{
-    		if(result.equals("error"))
-    		Toast.makeText(MainActivity.this, "Error fetching Attendance", Toast.LENGTH_SHORT).show();
-    		else if(result.equals("redirect"))
-    		Toast.makeText(MainActivity.this, "Incorrect Captcha", Toast.LENGTH_SHORT).show();
-    		else
-    			Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
-    		
+    		if(resultCode == RESULT_OK)
+    		{
+    			saveMarksToSharedPrefs(result);
+        		Toast.makeText(MainActivity.this, "Success! Booyeah!", Toast.LENGTH_SHORT).show();
+    			
+    		}
+	    	if (resultCode == RESULT_CANCELED)
+	    	{
+	    		if(result.equals("error"))
+	    		Toast.makeText(MainActivity.this, "Error fetching Attendance", Toast.LENGTH_SHORT).show();
+	    		else if(result.equals("redirect"))
+	    		Toast.makeText(MainActivity.this, "Incorrect Captcha", Toast.LENGTH_SHORT).show();
+	    		else
+	    			Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+	    		
+	    	}
     	}
     }
     

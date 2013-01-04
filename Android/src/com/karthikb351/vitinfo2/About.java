@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import com.karthikb351.vitinfo2.R;
 
 public class About extends Activity {
 	

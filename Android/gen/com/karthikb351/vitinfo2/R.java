@@ -25,13 +25,14 @@ public final class R {
         public static final int progress_red=0x7f020005;
     }
     public static final class id {
-        public static final int about=0x7f080028;
+        public static final int about=0x7f08002a;
         public static final int atten=0x7f080011;
+        public static final int atten_all=0x7f08001e;
         public static final int atten_detailed=0x7f08001d;
-        public static final int bunk_add=0x7f080021;
-        public static final int bunk_picker=0x7f08001e;
-        public static final int bunk_sub=0x7f08001f;
-        public static final int bunk_val=0x7f080020;
+        public static final int bunk_add=0x7f080022;
+        public static final int bunk_picker=0x7f08001f;
+        public static final int bunk_sub=0x7f080020;
+        public static final int bunk_val=0x7f080021;
         public static final int button1=0x7f080002;
         public static final int button2=0x7f080004;
         public static final int captcha_edittext=0x7f080008;
@@ -40,23 +41,24 @@ public final class R {
         public static final int captcha_refresh=0x7f080007;
         public static final int code_detailed=0x7f080016;
         public static final int datePicker=0x7f08000c;
-        public static final int details=0x7f080027;
+        public static final int details=0x7f080029;
         public static final int diagMsg=0x7f08000a;
         public static final int diagRegno=0x7f08000b;
         public static final int list=0x7f08000e;
         public static final int list_item=0x7f08000f;
         public static final int loginDetails=0x7f080009;
-        public static final int makeup_add=0x7f080025;
-        public static final int makeup_picker=0x7f080022;
-        public static final int makeup_sub=0x7f080023;
-        public static final int makeup_val=0x7f080024;
+        public static final int makeup_add=0x7f080026;
+        public static final int makeup_picker=0x7f080023;
+        public static final int makeup_sub=0x7f080024;
+        public static final int makeup_val=0x7f080025;
         public static final int net_per=0x7f08001c;
         public static final int progress=0x7f080012;
         public static final int progressBar_detailed=0x7f08001b;
         public static final int progress_layout=0x7f08001a;
-        public static final int refresh=0x7f080026;
+        public static final int refresh=0x7f080028;
         public static final int scrollView1=0x7f080015;
-        public static final int share=0x7f080029;
+        public static final int scrollView2=0x7f080027;
+        public static final int share=0x7f08002b;
         public static final int slot=0x7f080014;
         public static final int slot_detailed=0x7f080018;
         public static final int textView1=0x7f080000;
@@ -90,5 +92,6 @@ public final class R {
         public static final int HSBottomAnimTheme=0x7f050003;
         public static final int HSRightAnim=0x7f050000;
         public static final int HSRightAnimTheme=0x7f050001;
+        public static final int LightThemeSelector=0x7f050004;
     }
 }

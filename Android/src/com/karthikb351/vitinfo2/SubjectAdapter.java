@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.karthikb351.vitinfo2.R;
 
 public class SubjectAdapter extends ArrayAdapter {
 	

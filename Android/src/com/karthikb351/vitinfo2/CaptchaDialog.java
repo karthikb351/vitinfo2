@@ -3,6 +3,7 @@ package com.karthikb351.vitinfo2;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -28,6 +29,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import com.karthikb351.vitinfo2.R;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 
 public class CaptchaDialog extends Activity {
 	
@@ -130,7 +137,7 @@ public class CaptchaDialog extends Activity {
 		protected void onPreExecute() {
 			
 		  	pdia = new ProgressDialog(CaptchaDialog.this);
-	        pdia.setMessage("Fetching Attendance");
+	        pdia.setMessage("Submitting Captcha");
 	        pdia.setCancelable(true);
 	        pdia.setOnCancelListener(new DialogInterface.OnCancelListener() {
 				
@@ -148,7 +155,7 @@ public class CaptchaDialog extends Activity {
 			// TODO Auto-generated method stub
 			String res="";
 			ArrayList <String> details=params[0];
-			String urldisplay = "http://vitattx.appspot.com/att/"+details.get(0)+"/"+details.get(1)+"/"+details.get(2);
+			String urldisplay = "http://vitattx.appspot.com/captchasub/"+details.get(0)+"/"+details.get(1)+"/"+details.get(2);
 			try {
 				HttpClient client = new DefaultHttpClient();
 				HttpGet request = new HttpGet(urldisplay);
@@ -178,13 +185,16 @@ public class CaptchaDialog extends Activity {
 					returnIntent.putExtra("result", "error");
 					setResult(RESULT_CANCELED, returnIntent);
 				}
-				else if(result.contains("redirect")){
-					returnIntent.putExtra("result", "redirect");
+				else if(result.contains("timedout")){
+					returnIntent.putExtra("result", "timedout");
+					setResult(RESULT_CANCELED, returnIntent);
+				}
+				else if(result.contains("captchaerror")){
+					returnIntent.putExtra("result", "captchaerror");
 					setResult(RESULT_CANCELED, returnIntent);
 				}
 				else {
-
-				 	returnIntent.putExtra("result",result);
+					returnIntent.putExtra("result", "success");
 				 	setResult(RESULT_OK,returnIntent);
 					
 				}
@@ -197,6 +207,19 @@ public class CaptchaDialog extends Activity {
 		}
 	}
 	
+	public static byte[] convertInputStreamToByteArray(InputStream is) throws IOException
+	{
+		BufferedInputStream bis = new BufferedInputStream(is);
+		ByteArrayOutputStream buf = new ByteArrayOutputStream();
+		int result = bis.read();
+		while(result !=-1)
+		{
+				byte b = (byte)result;
+					buf.write(b);
+			result = bis.read();
+		}
+		return buf.toByteArray();
+	}
 	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 		  ImageView bmImage;
 		  ProgressDialog pdia;
@@ -232,24 +255,13 @@ public class CaptchaDialog extends Activity {
 		      String urldisplay = "http://vitattx.appspot.com/captcha/"+urls[0];
 		      Bitmap mIcon11 = null;
 		      try {
-		    	  /*
-		    	  HttpParams params=new BasicHttpParams();
-		    	  HttpConnectionParams.setConnectionTimeout(params, 15000);
-		    	  HttpConnectionParams.setSoTimeout(params, 15000);
-		    	  //HttpClient client = new DefaultHttpClient(params);
 		    	  HttpClient client = new DefaultHttpClient();
 		    	  HttpGet request = new HttpGet(urldisplay);
 		    	  HttpResponse response;
 		    	  response = client.execute(request);
-		        //InputStream in = new java.net.URL(urldisplay).openStream();
-		    	  HttpEntity entity=response.getEntity();
-		    	  mIcon11 = BitmapFactory.decodeStream(entity.getContent());
-		    	  */
-		    	  
-		    	  InputStream in = new java.net.URL(urldisplay).openStream();
-		    	  mIcon11 = BitmapFactory.decodeStream(in);
-		    	  
-		    	  
+		          HttpEntity entity=response.getEntity();
+		    	  byte [] content = convertInputStreamToByteArray(entity.getContent());
+		    	  mIcon11 = BitmapFactory.decodeByteArray(content, 0, content.length);
 		      } catch (Exception e) {
 		    	  mIcon11=null;
 		          Log.e("Error", e.getMessage());
