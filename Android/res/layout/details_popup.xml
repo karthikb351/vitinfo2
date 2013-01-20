@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/diagRegno"
         android:layout_centerHorizontal="true"
+        android:calendarViewShown="false"
         android:layout_margin="5dp"
         android:keepScreenOn="true"
         android:endYear="2015"/>

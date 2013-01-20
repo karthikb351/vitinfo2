@@ -1,10 +1,12 @@
-application: vitinfo
-version: 1
+application: vitacademics
+version: 2
 runtime: python27
 api_version: 1
 threadsafe: yes
 
+
 inbound_services:
+- warmup
 - mail
 
 handlers:

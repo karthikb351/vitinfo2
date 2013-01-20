@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item android:id="@+id/refresh"
-	android:title="Refresh" />
+    <item android:id="@+id/refreshAtt"
+	android:title="Refresh"
+	android:icon="@drawable/ic_menu_refresh"
+	android:showAsAction="ifRoom|withText"  />
     <item android:id="@+id/details"
-	android:title="Login" />
+	android:title="Login"
+	android:icon="@drawable/ic_menu_profile"
+	android:showAsAction="ifRoom|withText"/>
     <item android:id="@+id/about"
-	android:title="About" />
+	android:title="About"
+	android:icon="@drawable/ic_menu_about"
+	android:showAsAction="ifRoom|withText" />
     <item android:id="@+id/share"
-	android:title="Tell your friends!" />
+	android:title="Tell your friends!"
+	android:icon="@drawable/ic_menu_share"
+	android:showAsAction="ifRoom|withText" />
 	
 </menu>

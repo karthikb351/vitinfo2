@@ -125,6 +125,7 @@
 													                android:layout_width="fill_parent"
 													                android:layout_height="wrap_content"
 													                android:layout_weight="25"
+													                android:textAppearance="?android:attr/textAppearanceMedium"
 													                android:text="-" />
 							
 													            <TextView
@@ -140,6 +141,7 @@
 													                android:layout_width="fill_parent"
 													                android:layout_height="wrap_content"
 													                android:layout_weight="25"
+													                android:textAppearance="?android:attr/textAppearanceMedium"
 													                android:text="+" />
 											    </LinearLayout>
 									            						
@@ -154,7 +156,7 @@
 													                android:layout_width="fill_parent"
 													                android:layout_height="wrap_content"
 														            android:layout_weight="25"
-	
+														            android:textAppearance="?android:attr/textAppearanceMedium"
 													                android:text="-" />
 							
 													            <TextView
@@ -170,48 +172,12 @@
 													                android:layout_width="fill_parent"
 													                android:layout_height="wrap_content"
 													                android:layout_weight="25"
+													                android:textAppearance="?android:attr/textAppearanceMedium"
 													                android:text="+" />
 											            
 									            </LinearLayout>
 								        </LinearLayout>
 						        </LinearLayout>
-
-								<ScrollView
-								    android:id="@+id/scrollView2"
-								    android:layout_width="wrap_content"
-								    android:layout_height="wrap_content"
-								    android:layout_below="@+id/atten_all"
-								    android:padding="5px" >
-
-								    <LinearLayout
-								        android:layout_width="match_parent"
-								        android:layout_height="match_parent"
-								        android:orientation="vertical" >
-									            <LinearLayout 
-									                android:layout_width="match_parent"
-											        android:layout_height="match_parent"
-											        android:orientation="horizontal">
-
-													            <TextView
-													                android:layout_width="wrap_content"
-													                android:layout_height="wrap_content"
-													                android:text="hello" />
-									                
-									            </LinearLayout>
-									            <LinearLayout 
-									                android:layout_width="match_parent"
-											        android:layout_height="match_parent"
-											        android:orientation="horizontal">
-
-									                			 <TextView
-									                			     android:layout_width="wrap_content"
-									                			     android:layout_height="wrap_content"
-									                			     android:text="hello" />
-
-									            </LinearLayout>
-									            
-								    </LinearLayout>
-								</ScrollView>
 
 				    </RelativeLayout>
 			</RelativeLayout>
