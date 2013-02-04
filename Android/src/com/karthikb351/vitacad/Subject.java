@@ -1,45 +1,38 @@
 package com.karthikb351.vitacad;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 
 public class Subject {
 
-	String title,code,type,slot;
-	int max, atten;
-	public Subject(String tit, String cd, String ty, String sl, int m, int at) {
+	String title, code, type, slot, regdate, attended, conducted, classnbr;
+	int attendance_length;
+	Attendance attendance[]=null;
+	Subject()
+	{
 		super();
-		title=tit;
-		code=cd;
-		type=ty;
-		slot=sl;
-		max=m;
-		atten=at;
+		attendance_length=0;
 	}
-
-	public String getTitle() {
-		// TODO Auto-generated method stub
-		return title;
-	}
-	
-	public String getSlot() {
-		return slot;
-	}
-	
-	public String getCode() {
-		return code;
+	void addAttendance(JSONArray array)
+	{
+		try
+		{
+			for(int i=array.length()-1;i>=0;i--)
+			{
+				String s,d;
+				s=array.getString(i--);
+				d=array.getString(i);
+				attendance[attendance_length++]=new Attendance(s,d);
+			}
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public String getType() {
-		return type;
-	}
-	public int getAtten() {
-		// TODO Auto-generated method stub
-		return atten;
-	}
-
-	public int getMax() {
-		// TODO Auto-generated method stub
-		return max;
-	}
 
 
 }

@@ -15,7 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.karthikb351.vitinfo2.R;
+import com.karthikb351.vitinfo2dev.R;
 
 public class SubjectAdapter extends ArrayAdapter {
 	
@@ -40,37 +40,48 @@ public class SubjectAdapter extends ArrayAdapter {
 		            /* Extract the Subject's object to show */
 		            Subject sub = (Subject) getItem( position );
 		            TextView title = (TextView) view.findViewById(R.id.title);
-			       	title.setText(sub.getTitle());
+			       	title.setText(sub.title);
 			       	TextView slot = (TextView) view.findViewById(R.id.slot);
-			       	slot.setText(sub.getSlot());
+			       	slot.setText(sub.slot);
 			       	TextView type = (TextView) view.findViewById(R.id.type);
-			       	type.setText(sub.getType());
+			       	type.setText(sub.type);
 			        TextView atten = (TextView) view.findViewById(R.id.atten);
-			       	int a,b;
-			       	a=sub.getMax();
-			       	b=sub.getAtten();
-			       	float per=getPer(b, a);
-			       	atten.setText(b+"/"+a+"\n"+per+"%");
+			       	String con,att;
+			       	con=sub.conducted;
+			       	att=sub.attended;
+			       	int a,c;
+			       	
+			       	try
+			       	{
+			       		c=Integer.parseInt(con);
+			       		a=Integer.parseInt(att);
+			       	}
+			       	catch(NumberFormatException exc)
+			       	{
+			       		exc.printStackTrace();
+			       		a=0;
+			       		c=0;
+			       	}
+			       	float per=getPer(a, c);
+			       	atten.setText(a+"/"+c+"\n"+per+"%");
 			       	ProgressBar pg= (ProgressBar) view.findViewById(R.id.progress);
 			       	
-			       	int c;
+			       	int color;
 			       	if(per<80&&per>=75)
-			       		c=Color.parseColor("#FF8300");//Amber
+			       		color=Color.parseColor("#FF8300");//Amber
 			       	else if(per<75)
-			       		c=Color.parseColor("#FF0000");//Red
+			       		color=Color.parseColor("#FF0000");//Red
 			       	else
-			       		c=Color.parseColor("#00AF33");//Green
-			       	
-			       	if(a==0&&b==0);
+			       		color=Color.parseColor("#00AF33");//Green
 			       	 
 			       	float x[]={5,5,5,5,5,5,5,5};
 			       	ShapeDrawable pgDrawable = new ShapeDrawable(new RoundRectShape(x, null,null));
-			       	pgDrawable.getPaint().setColor(c);
+			       	pgDrawable.getPaint().setColor(color);
 			       	ClipDrawable progress = new ClipDrawable(pgDrawable, Gravity.LEFT, ClipDrawable.HORIZONTAL);
 			       	pg.setProgressDrawable(progress);
 			       	pg.setBackgroundDrawable(this.getContext().getResources().getDrawable(R.drawable.progress_green));
-					pg.setMax(a);
-			        pg.setProgress(b);
+					pg.setMax(c);
+			        pg.setProgress(a);
 			        pg.invalidate();
             return view;
       }

@@ -25,8 +25,17 @@
 				        android:layout_margin="5dp"
 				        android:layout_marginBottom="0dp"
 				        android:maxLines="1"
-				        android:text="Large Text"
-				        android:textAppearance="?android:attr/textAppearanceLarge" />
+				        android:text="Large Text" />
+				    
+				    <TextView
+				        android:id="@+id/slot_detailed"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:layout_alignParentRight="true"
+				        android:layout_alignParentTop="true"
+				        android:layout_margin="5dp"
+				        android:maxLines="1"
+				        android:text="Large Text" />
 				
 				    <TextView
 				        android:id="@+id/title_detailed"
@@ -43,7 +52,7 @@
 				        android:textSize="30dp" />
 				    
 				    <TextView
-				        android:id="@+id/slot_detailed"
+				        android:id="@+id/type_detailed"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:layout_margin="5dp"
@@ -53,7 +62,7 @@
 				        android:textAppearance="?android:attr/textAppearanceMedium" />
 				    
 				    <TextView
-				        android:id="@+id/type_detailed"
+				        android:id="@+id/lastAtten_detailed"
 				        android:layout_width="wrap_content"
 				        android:layout_margin="5dp"
 				        android:layout_height="wrap_content"
@@ -85,10 +94,7 @@
 							        android:layout_weight="0"
 							        android:text="99%"
 							        android:textSize="30dp" />
-				    
-				    
 				    </LinearLayout>
-				    
 				    <RelativeLayout
 				        android:layout_width="fill_parent"
 				        android:layout_height="wrap_content"
@@ -180,6 +186,9 @@
 						        </LinearLayout>
 
 				    </RelativeLayout>
+
+
 			</RelativeLayout>
 		</ScrollView>
+
 </RelativeLayout>

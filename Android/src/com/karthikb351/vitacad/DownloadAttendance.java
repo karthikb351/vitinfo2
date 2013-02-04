@@ -27,6 +27,7 @@ public class DownloadAttendance extends SherlockActivity{
 	SharedPreferences settings;
 	SharedPreferences.Editor editor;
 	String regno,dob,captcha;
+	LoadAttendanceTask currentTask;
 	boolean haveCap=false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class DownloadAttendance extends SherlockActivity{
 		settings=getSharedPreferences("vitacad", 0);
 		regno=settings.getString("regno", " ");
 		dob=settings.getString("dob", " ");
-		LoadAttendanceTask currentTask=new LoadAttendanceTask();
+		currentTask=new LoadAttendanceTask();
 		ArrayList<String> details = new ArrayList<String>();
 		details.add(0,regno);
 		details.add(1,dob);
@@ -48,7 +49,8 @@ public class DownloadAttendance extends SherlockActivity{
 	private class LoadAttendanceTask extends AsyncTask<ArrayList <String>, Void, String>
 	{
 		ProgressDialog pdia;
-		
+		boolean cancelled=false;
+		String url;
 		protected void onPreExecute() {
 			
 		  	pdia = new ProgressDialog(DownloadAttendance.this);
@@ -58,8 +60,7 @@ public class DownloadAttendance extends SherlockActivity{
 				
 				@Override
 				public void onCancel(DialogInterface dialog) {
-					cancel(true);
-					finish();
+					cancelled=true;
 					
 				}
 			});
@@ -72,6 +73,7 @@ public class DownloadAttendance extends SherlockActivity{
 			String res="";
 			ArrayList <String> details=params[0];
 			String urldisplay = "http://vitacademics.appspot.com/att/"+details.get(0)+"/"+details.get(1);
+			url=urldisplay;
 			try {
 				HttpClient client = new DefaultHttpClient();
 				HttpGet request = new HttpGet(urldisplay);
@@ -86,14 +88,23 @@ public class DownloadAttendance extends SherlockActivity{
 				Log.e("Error", e.getMessage());
 				e.printStackTrace();
 				}
-			if(isCancelled())
+			if(cancelled)
 				return "cancelled";
 			else
 			return res;
 		}
-		
+		@Override
+		protected void onCancelled(String result) {
+			Intent returnIntent = new Intent();
+			Log.i("cancelled",result);
+			returnIntent.putExtra("result", "cancelled");
+		 	setResult(RESULT_CANCELED,returnIntent);
+		 	finish();
+		}
+		@Override
 		protected void onPostExecute(String result) {
 
+			Toast.makeText(DownloadAttendance.this, "due to url :"+url, Toast.LENGTH_LONG).show();
 			if(!result.equals("cancelled"))
 			{
 				
@@ -112,9 +123,10 @@ public class DownloadAttendance extends SherlockActivity{
 				else
 				{
 					Log.e("error",result);
-					returnIntent.putExtra("result", result);
+					returnIntent.putExtra("result", "error");
 				 	setResult(RESULT_CANCELED,returnIntent);
 				}
+				
 			}
 			finish();
 			pdia.dismiss();

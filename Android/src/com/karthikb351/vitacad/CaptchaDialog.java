@@ -31,7 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
-import com.karthikb351.vitinfo2.R;
+import com.karthikb351.vitinfo2dev.R;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;

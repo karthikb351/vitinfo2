@@ -1,5 +1,11 @@
 package com.karthikb351.vitacad;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,12 +20,13 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
-import com.karthikb351.vitinfo2.R;
+import com.karthikb351.vitinfo2dev.*;
 
 
 public class SubjectDetails extends SherlockActivity {
@@ -33,6 +40,7 @@ public class SubjectDetails extends SherlockActivity {
 	boolean progFlag=false;
 	int max, atten,count=1,size,pos,globe_makeup,globe_bunk,prev_bunk,prev_makeup,class_offset;
 	TextView tv_title,tv_slot,tv_type,tv_code,tv_atten,tv_net_per,bunk_val,makeup_val;
+	ListView list;
 	ProgressBar progBar;
 	Button bunk_add,bunk_sub, makeup_add, makeup_sub;
 	@Override
@@ -53,7 +61,6 @@ public class SubjectDetails extends SherlockActivity {
 		bunk_sub=(Button)findViewById(R.id.bunk_sub);
 		makeup_add=(Button)findViewById(R.id.makeup_add);
 		makeup_sub=(Button)findViewById(R.id.makeup_sub);
-		
 		bunk_add.setOnClickListener(ocl);
 		bunk_sub.setOnClickListener(ocl);
 		makeup_add.setOnClickListener(ocl);
@@ -107,6 +114,10 @@ public class SubjectDetails extends SherlockActivity {
 		{
 			globe_bunk=0;
 		}
+		if(globe_bunk==0)
+			bunk_sub.setClickable(false);
+		else
+			bunk_sub.setClickable(true);
 		bunk_val.setText("If you miss "+globe_bunk+" more class(s)");
 		update();
 	}
@@ -118,6 +129,10 @@ public class SubjectDetails extends SherlockActivity {
 			globe_makeup-=class_offset;
 		if(globe_makeup<0)
 			globe_makeup=0;
+		if(globe_makeup==0)
+			makeup_sub.setClickable(false);
+		else
+			makeup_sub.setClickable(true);
 		makeup_val.setText("If you attend "+globe_makeup+" more class(s)");
 		update();
 	}
@@ -155,10 +170,8 @@ public class SubjectDetails extends SherlockActivity {
 			tv_atten.setText("You would have attended "+t_atten+" out of "+t_max+" classes");
 		}
 	}
-	
 	void load()
 	{
-		
 		nbr=String.valueOf(pos);
 		code=settings.getString("Sub_"+nbr+"code","DB Error");
 		title=settings.getString("Sub_"+nbr+"title","DB Error"); 

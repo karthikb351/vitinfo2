@@ -9,7 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class GetStuff extends SherlockActivity {
-	final static int CAPTCHA=11,ATTEN=12;
+	final static int CAPTCHA=11,ATTEN=22,DETAILS=33;
 	String s;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +24,8 @@ public class GetStuff extends SherlockActivity {
 			getMarks();
 		else if(s.equals("atten"))
 			getAtten();
+		else if(s.equals("details"))
+			getDetails(i.getStringExtra("sub"));
 		else
 		{
 			finish();
@@ -41,6 +43,13 @@ public class GetStuff extends SherlockActivity {
 		Intent i = new Intent(GetStuff.this, DownloadAttendance.class);
 		i.putExtra("what", s);
 		startActivityForResult(i, ATTEN);
+	}
+	void getDetails(String s)
+	{
+		Intent i =new Intent(GetStuff.this, DownloadAttenDetails.class);
+		i.putExtra("sub", s);
+		Toast.makeText(GetStuff.this, "Subject code is: "+s, Toast.LENGTH_SHORT).show();
+		startActivityForResult(i, DETAILS);
 	}
 	void getCaptcha()
 	{
@@ -111,6 +120,35 @@ public class GetStuff extends SherlockActivity {
 	    		}
 	    	}
     	}
+    	if (requestCode == DETAILS)
+		{
+    		if(resultCode == RESULT_OK)
+    		{
+    			Log.i("status","Got details!");
+    			Intent returnIntent=new Intent(); 
+				returnIntent.putExtra("result", result);
+			 	setResult(RESULT_OK,returnIntent);
+			 	finish();
+    		}
+	    	if (resultCode == RESULT_CANCELED)
+	    	{
+	    		if(result.equals("timedout"))
+	    		{
+	    			getCaptcha();
+	    		}
+	    		else if(result.equals("cancelled"))
+	    		{
+	    			Toast.makeText(GetStuff.this, "Cancelled", Toast.LENGTH_SHORT).show();
+	    			finish();
+	    		}
+	    		else
+	    		{
+	    			Toast.makeText(GetStuff.this, "Error fetching Details", Toast.LENGTH_SHORT).show();
+	    			finish();
+	    		}
+	    		
+	    	}
+        }
     }
 
 }

@@ -1,0 +1,63 @@
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/list_item"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp" >
+
+        <TextView
+            android:id="@+id/title"
+            android:singleLine="true" 
+    		android:ellipsize="marquee"
+    		android:marqueeRepeatLimit ="marquee_forever"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignBaseline="@+id/atten"
+            android:layout_toLeftOf="@+id/atten"
+            android:padding="5dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/atten"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="right"
+            android:padding="5dp"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:padding="10dp"
+            android:layout_height="5dp"
+            android:layout_below="@id/title" />
+
+        <TextView
+            android:id="@+id/type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/progress"
+            android:layout_alignParentLeft="true"
+            android:padding="5dp"
+            android:textSize="11dp"
+            android:text="" />
+        <TextView
+            android:id="@+id/slot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/progress"
+            android:layout_alignParentRight="true"
+            android:padding="5dp"
+            android:textSize="11dp"
+            android:text="" />
+        <ImageView
+            android:src="?android:attr/listDivider" 
+            android:layout_height="2dp"
+            android:layout_width="fill_parent" />
+
+    </RelativeLayout>
