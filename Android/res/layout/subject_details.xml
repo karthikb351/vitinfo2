@@ -96,6 +96,7 @@
 							        android:textSize="30dp" />
 				    </LinearLayout>
 				    <RelativeLayout
+				        android:id="@+id/atten_toolbar"
 				        android:layout_width="fill_parent"
 				        android:layout_height="wrap_content"
 				        android:layout_below="@id/progress_layout" >
@@ -186,7 +187,20 @@
 						        </LinearLayout>
 
 				    </RelativeLayout>
-
+					<RelativeLayout 
+					    android:layout_width="fill_parent"
+					    android:layout_height="wrap_content"
+					    android:layout_below="@+id/atten_toolbar"
+					    android:layout_margin="5dp"
+					    android:padding="5dp">
+					    <TextView 
+					        android:id="@+id/atten_lastUpdated"
+					        android:text="Last Updated on: 26/2/2013"
+					        android:layout_width="fill_parent"
+					        android:layout_height="fill_parent"
+					    	android:gravity="center_horizontal"
+					    	android:textAppearance="?android:attr/textAppearanceMedium" />
+					</RelativeLayout>
 
 			</RelativeLayout>
 		</ScrollView>

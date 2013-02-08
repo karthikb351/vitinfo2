@@ -33,17 +33,43 @@ public class DownloadAttendance extends SherlockActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		settings=getSharedPreferences("vitacad", 0);
-		regno=settings.getString("regno", " ");
-		dob=settings.getString("dob", " ");
-		currentTask=new LoadAttendanceTask();
-		ArrayList<String> details = new ArrayList<String>();
-		details.add(0,regno);
-		details.add(1,dob);
-		currentTask.execute(details);
+		start();
 		Intent returnIntent = new Intent();
 		returnIntent.putExtra("result", "cancelled");
 		setResult(RESULT_CANCELED, returnIntent);  
+	}
+	
+	void startLoadAttendance()
+	{
+		if(settings.getBoolean("newuser", true))
+		{
+			loginDiag();
+		}
+		else
+		{
+			settings=getSharedPreferences("vitacad", 0);
+			regno=settings.getString("regno", " ");
+			dob=settings.getString("dob", " ");
+			currentTask=new LoadAttendanceTask();
+			ArrayList<String> details = new ArrayList<String>();
+			details.add(0,regno);
+			details.add(1,dob);
+			currentTask.execute(details);
+		}
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		if(requestCode==DataHandler.CAPTCHA_REQUEST)
+		{
+			String result=data.getStringExtra("result");
+			if(resultCode==DataHandler.RESULT_ERROR)
+			{
+				
+			}
+		}
+		
 	}
 	
 	private class LoadAttendanceTask extends AsyncTask<ArrayList <String>, Void, String>
@@ -55,12 +81,13 @@ public class DownloadAttendance extends SherlockActivity{
 			
 		  	pdia = new ProgressDialog(DownloadAttendance.this);
 	        pdia.setMessage("Loading Attendance");
-	        pdia.setCancelable(true);
+	        pdia.setCancelable(false);
 	        pdia.setOnCancelListener(new DialogInterface.OnCancelListener() {
 				
 				@Override
 				public void onCancel(DialogInterface dialog) {
 					cancelled=true;
+					currentTask.onCancelled("cancelled");
 					
 				}
 			});
@@ -72,7 +99,7 @@ public class DownloadAttendance extends SherlockActivity{
 			// TODO Auto-generated method stub
 			String res="";
 			ArrayList <String> details=params[0];
-			String urldisplay = "http://vitacademics.appspot.com/att/"+details.get(0)+"/"+details.get(1);
+			String urldisplay = "http://vitacademicsdev.appspot.com/att/"+details.get(0)+"/"+details.get(1);
 			url=urldisplay;
 			try {
 				HttpClient client = new DefaultHttpClient();
@@ -80,7 +107,6 @@ public class DownloadAttendance extends SherlockActivity{
 				HttpResponse response;
 				response = client.execute(request);
 				res=EntityUtils.toString(response.getEntity());
-				
 				}
 			
 			catch (Exception e) {
@@ -91,7 +117,7 @@ public class DownloadAttendance extends SherlockActivity{
 			if(cancelled)
 				return "cancelled";
 			else
-			return res;
+				return res;
 		}
 		@Override
 		protected void onCancelled(String result) {
@@ -104,7 +130,7 @@ public class DownloadAttendance extends SherlockActivity{
 		@Override
 		protected void onPostExecute(String result) {
 
-			Toast.makeText(DownloadAttendance.this, "due to url :"+url, Toast.LENGTH_LONG).show();
+			Toast.makeText(DownloadAttendance.this, "got:"+result+" due to url :"+url, Toast.LENGTH_LONG).show();
 			if(!result.equals("cancelled"))
 			{
 				
@@ -113,23 +139,27 @@ public class DownloadAttendance extends SherlockActivity{
 				{
 					Log.i("timedout",result);
 					returnIntent.putExtra("result", result);
-				 	setResult(RESULT_CANCELED,returnIntent);
+				 	setResult(DataHandler.RESULT_TIMEDOUT,returnIntent);
 				}
 				else if(result.contains("valid"))
 				{
 					returnIntent.putExtra("result", result);
+					Log.i("json", result);
 				 	setResult(RESULT_OK,returnIntent);
 				}
 				else
 				{
 					Log.e("error",result);
 					returnIntent.putExtra("result", "error");
-				 	setResult(RESULT_CANCELED,returnIntent);
+				 	setResult(DataHandler.RESULT_ERROR,returnIntent);
 				}
 				
 			}
+			if (pdia.isShowing()) {
+				   pdia.dismiss();
+				}
+
 			finish();
-			pdia.dismiss();
 				
 		}
 	}

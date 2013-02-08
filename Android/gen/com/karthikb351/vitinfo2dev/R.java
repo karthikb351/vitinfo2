@@ -13,7 +13,6 @@ public final class R {
         public static final int hs_slide_in_right=0x7f040001;
         public static final int hs_slide_out_bottom=0x7f040002;
         public static final int hs_slide_out_right=0x7f040003;
-        public static final int right_slide_out=0x7f040004;
     }
     public static final class attr {
         /**  Specified if we are forcing an action item overflow menu. 
@@ -808,7 +807,7 @@ containing a value of this type.
         public static final int progress_red=0x7f02005e;
     }
     public static final class id {
-        public static final int about=0x7f05004f;
+        public static final int about=0x7f050051;
         public static final int abs__action_bar=0x7f050022;
         public static final int abs__action_bar_container=0x7f050021;
         public static final int abs__action_bar_subtitle=0x7f050011;
@@ -839,21 +838,23 @@ containing a value of this type.
         public static final int abs__titleDivider=0x7f05001c;
         public static final int abs__up=0x7f05000b;
         public static final int atten=0x7f050035;
-        public static final int atten_all=0x7f050043;
+        public static final int atten_all=0x7f050044;
         public static final int atten_detail_date=0x7f050031;
         public static final int atten_detail_status=0x7f050032;
-        public static final int atten_detailed=0x7f050042;
-        public static final int bunk_add=0x7f050047;
-        public static final int bunk_picker=0x7f050044;
-        public static final int bunk_sub=0x7f050045;
-        public static final int bunk_val=0x7f050046;
+        public static final int atten_detailed=0x7f050043;
+        public static final int atten_lastUpdated=0x7f05004d;
+        public static final int atten_toolbar=0x7f050042;
+        public static final int bunk_add=0x7f050048;
+        public static final int bunk_picker=0x7f050045;
+        public static final int bunk_sub=0x7f050046;
+        public static final int bunk_val=0x7f050047;
         public static final int captcha_edittext=0x7f05002a;
         public static final int captcha_img=0x7f050028;
         public static final int captcha_layout=0x7f050027;
         public static final int captcha_refresh=0x7f050029;
         public static final int code_detailed=0x7f05003a;
         public static final int datePicker=0x7f05002e;
-        public static final int details=0x7f05004e;
+        public static final int details=0x7f050050;
         public static final int diagMsg=0x7f05002c;
         public static final int diagRegno=0x7f05002d;
         public static final int disableHome=0x7f050009;
@@ -863,19 +864,19 @@ containing a value of this type.
         public static final int listMode=0x7f050002;
         public static final int list_item=0x7f050033;
         public static final int loginDetails=0x7f05002b;
-        public static final int makeup_add=0x7f05004b;
-        public static final int makeup_picker=0x7f050048;
-        public static final int makeup_sub=0x7f050049;
-        public static final int makeup_val=0x7f05004a;
+        public static final int makeup_add=0x7f05004c;
+        public static final int makeup_picker=0x7f050049;
+        public static final int makeup_sub=0x7f05004a;
+        public static final int makeup_val=0x7f05004b;
         public static final int net_per=0x7f050041;
         public static final int normal=0x7f050001;
         public static final int progress=0x7f050036;
         public static final int progressBar_detailed=0x7f050040;
         public static final int progress_layout=0x7f05003f;
-        public static final int refreshAtt=0x7f05004d;
-        public static final int refresh_atten_details=0x7f05004c;
+        public static final int refreshAtt=0x7f05004f;
+        public static final int refresh_atten_details=0x7f05004e;
         public static final int scrollView1=0x7f050039;
-        public static final int share=0x7f050050;
+        public static final int share=0x7f050052;
         public static final int showCustom=0x7f050008;
         public static final int showHome=0x7f050005;
         public static final int showTitle=0x7f050007;

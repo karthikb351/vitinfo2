@@ -11,7 +11,7 @@ import urllib
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        self.response.out.write('<h1>VITacademics Scraping Engine</h1> <h2>Running On Google App Engine.</h2> \n<h4>Last Update: 2nd February 2013 </h4><h4>\n\n(c) 2013 CollegeCODE</h4>')
+        self.response.out.write('<h1>VITacademics Scraping Engine [DEVELOPMENT SERVER]</h1> <h2>Running On Google App Engine.</h2> \n<h4>Last Update: 4th February 2013 </h4><h4>\n\n(c) 2013 CollegeCODE</h4>')
 
 class DetailsExtractor(webapp2.RequestHandler):
 	def get(self, regno, dob, subject):

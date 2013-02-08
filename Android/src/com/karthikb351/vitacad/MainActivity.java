@@ -1,28 +1,47 @@
 package com.karthikb351.vitacad;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,12 +56,15 @@ import com.karthikb351.vitinfo2dev.R;
 
 public class MainActivity extends SherlockActivity {
 	
+	LoadAttendanceTask currentTask;
 	final Helpshift hs = new Helpshift();
 	static Tracker mTracker;
 	static GoogleAnalytics mInstance;
 	SharedPreferences settings;
 	SharedPreferences.Editor editor;
-	boolean newuser;
+	boolean attenCancelled=false;
+	boolean captchaSubmitCancelled=false;
+	boolean captchaLoadCancelled=false;
 	String DOB, REGNO;
 	ListView listViewSub;
 	TextView tv;
@@ -97,7 +119,6 @@ public class MainActivity extends SherlockActivity {
         	case R.id.about:
         		mTracker.sendEvent("ui_action", "button_press", "about_button", 0l);
             	hs.showSupport(MainActivity.this);
-        		//startActivity(new Intent(this, About.class));
         		return true;
         	
         	case R.id.refreshAtt:
@@ -106,21 +127,10 @@ public class MainActivity extends SherlockActivity {
 					loginDialog();
 				else
 				{
-					Intent i = new Intent(getApplicationContext(),GetStuff.class);
-					i.putExtra("what", "atten");
-				    startActivityForResult(i,1);
+					Intent i = new Intent(getApplicationContext(),DownloadAttendance.class);
+				    startActivityForResult(i,DataHandler.ATTEN_REQUEST);
 				}
         		return true;
-        	/*case R.id.refreshMarks:
-        		if(!settings.getBoolean("credentials", false))
-					loginDialog();
-				else
-				{
-					Intent i = new Intent(getApplicationContext(),GetStuff.class);
-					i.putExtra("what", "marks");
-				    startActivityForResult(i,2);
-				}
-        		return true;*/
         	case R.id.details:
         		loginDialog();
 				return true;
@@ -184,8 +194,8 @@ public class MainActivity extends SherlockActivity {
     	{
     		if(settings.getBoolean("credentials", false))
     		{
-    			Intent i = new Intent(MainActivity.this,GetStuff.class);
-    			i.putExtra("what", "atten");
+    			Intent i = new Intent(MainActivity.this,DownloadAttendance.class);
+    			startActivityForResult(i, DataHandler.ATTEN_REQUEST);
     		}
     		else
     		{
@@ -316,54 +326,337 @@ public class MainActivity extends SherlockActivity {
     	yy=String.valueOf(y);
     	return dd+mm+yy;
     }
-	
-	
-	
-	
-	
+    void startSubmitCaptcha()
+	{
+		ArrayList<String> details = new ArrayList<String>();
+		details.add(0,regno);
+		details.add(1,dob);
+		details.add(2,captcha);
+		currentSCTask = new SubmitCaptchaTask();
+		currentSCTask.execute(details);
+		
+	}
     
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    void startLoadAttendance()
+	{
+		if(settings.getBoolean("newuser", true))
+		{
+			loginDialog();
+		}
+		else
+		{
+			settings=getSharedPreferences("vitacad", 0);
+			regno=settings.getString("regno", " ");
+			dob=settings.getString("dob", " ");
+			currentTask=new LoadAttendanceTask();
+			ArrayList<String> details = new ArrayList<String>();
+			details.add(0,regno);
+			details.add(1,dob);
+			currentTask.execute(details);
+		}
+	}
+    View view;
+    String regno="",dob="";
+    AlertDialog.Builder builder;
+    ImageView imCaptcha;
+    Button refresh;
+	DownloadImageTask currentLCTask;
+	SubmitCaptchaTask currentSCTask;
+	EditText captcha_edittext;
+	String captcha="";
+	void startCaptcha()
+	{
+		settings=getSharedPreferences("vitacad", 0);
+		String regno=settings.getString("regno", " ");
+		String dob=settings.getString("dob", " ");
+		Log.i("status", "OnCreate");
+		view= getLayoutInflater().inflate(R.layout.captcha_dialog, null);
+		builder= new AlertDialog.Builder(MainActivity.this);
+		imCaptcha=(ImageView)view.findViewById(R.id.captcha_img);
+		refresh = (Button)view.findViewById(R.id.captcha_refresh);
+    	refresh.setOnClickListener(ocl);
+		builder.setView(view).setCancelable(false).setPositiveButton("Enter", diagocl).setNegativeButton("Cancel", diagocl).setTitle("Enter Captcha");
+		AlertDialog dialog = builder.create();
+    	dialog.show();
+    	currentLCTask=new DownloadImageTask(imCaptcha);
+    	currentLCTask.execute(regno);
+	}
+android.content.DialogInterface.OnClickListener diagocl = new android.content.DialogInterface.OnClickListener() {
+		
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			
+			
+			switch(which)
+			{
+				case DialogInterface.BUTTON_POSITIVE:
+					captcha_edittext=(EditText)(view.findViewById(R.id.captcha_edittext));
+					captcha=captcha_edittext.getText().toString();
+					startSubmitCaptcha();
+					break;
+				case DialogInterface.BUTTON_NEGATIVE:
+					break;
+			
+			}
+			
+			
+		}
+	};
+	OnClickListener ocl=new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+		
+			if(currentLCTask.getStatus()==AsyncTask.Status.RUNNING)
+				Toast.makeText(MainActivity.this, "Still Loading", Toast.LENGTH_SHORT).show();
+			else
+			{
+				currentLCTask=new DownloadImageTask(imCaptcha);
+				currentLCTask.execute(regno);
+			}
+		}
+	};
+    private class LoadAttendanceTask extends AsyncTask<ArrayList <String>, Void, String>
+	{
+		ProgressDialog pdia;
+		boolean cancelled=false;
+		String url;
+		protected void onPreExecute() {
+			
+		  	pdia = new ProgressDialog(MainActivity.this);
+	        pdia.setMessage("Loading Attendance");
+	        pdia.setCancelable(false);
+	        pdia.setOnCancelListener(new DialogInterface.OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					cancelled=true;
+					
+				}
+			});
+	        pdia.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+	        pdia.show();
+	  }
+		@Override
+		protected String doInBackground(ArrayList <String>... params) {
+			// TODO Auto-generated method stub
+			String res="";
+			ArrayList <String> details=params[0];
+			String urldisplay = "http://vitacademicsdev.appspot.com/att/"+details.get(0)+"/"+details.get(1);
+			url=urldisplay;
+			try {
+				HttpClient client = new DefaultHttpClient();
+				HttpGet request = new HttpGet(urldisplay);
+				HttpResponse response;
+				response = client.execute(request);
+				res=EntityUtils.toString(response.getEntity());
+				}
+			
+			catch (Exception e) {
+				res="error";
+				Log.e("Error", e.getMessage());
+				e.printStackTrace();
+				}
+			if(cancelled)
+				return "cancelled";
+			else
+				return res;
+		}
+		@Override
+		protected void onPostExecute(String result) {
+			
+			if(!result.equals("cancelled"))
+			{
+				
+				Intent returnIntent = new Intent();
+				if(result.contains("timedout"))
+				{
+					Log.i("timedout",result);
+					returnIntent.putExtra("result", result);
+				 	setResult(DataHandler.RESULT_TIMEDOUT,returnIntent);
+				}
+				else if(result.contains("valid"))
+				{
+					returnIntent.putExtra("result", result);
+					Log.i("json", result);
+				 	setResult(RESULT_OK,returnIntent);
+				}
+				else
+				{
+					Log.e("error",result);
+					returnIntent.putExtra("result", "error");
+				 	setResult(DataHandler.RESULT_ERROR,returnIntent);
+				}
+				
+			}
+			if (pdia.isShowing()) {
+				   pdia.dismiss();
+				}
 
-    	String result=data.getStringExtra("result");
-    	if (requestCode == 1)
-    	{
-    		if(resultCode == RESULT_OK)
-    		{
-    			saveAttenToSharedPrefs(result);
-        		Toast.makeText(MainActivity.this, "Success!", Toast.LENGTH_SHORT).show();
-    			
-    		}
-	    	if (resultCode == RESULT_CANCELED)
-	    	{
-	    		if(result.equals("error"))
-	    			Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-	    		else if(result.equals("redirect"))
-	    			Toast.makeText(MainActivity.this, "Incorrect Captcha", Toast.LENGTH_SHORT).show();
-	    		else
-	    			Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
-	    		
-	    	}
-    	}
-    	else if(requestCode == 2)
-    	{
-    		if(resultCode == RESULT_OK)
-    		{
-    			Bundle b=new Bundle();
-    			saveMarksToSharedPrefs(result);
-        		Toast.makeText(MainActivity.this, "Success! Booyeah!", Toast.LENGTH_SHORT).show();
-    			
-    		}
-	    	if (resultCode == RESULT_CANCELED)
-	    	{
-	    		if(result.equals("error"))
-	    			Toast.makeText(MainActivity.this, "Error fetching Attendance", Toast.LENGTH_SHORT).show();
-	    		else if(result.equals("redirect"))
-	    			Toast.makeText(MainActivity.this, "Incorrect Captcha", Toast.LENGTH_SHORT).show();
-	    		else
-	    			Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
-	    		
-	    	}
-    	}
-    }
-    
+			finish();
+				
+		}
+	}
+	
+	
+    private class SubmitCaptchaTask extends AsyncTask<ArrayList <String>, Void, String>
+	{
+		ProgressDialog pdia;
+		
+		protected void onPreExecute() {
+			
+		  	pdia = new ProgressDialog(MainActivity.this);
+	        pdia.setMessage("Submitting Captcha");
+	        pdia.setCancelable(true);
+	        pdia.setOnCancelListener(new DialogInterface.OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					captchaLoadCancelled=false;
+				}
+			});
+	        pdia.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+	        pdia.show();
+	  }
+		@Override
+		protected String doInBackground(ArrayList <String>... params) {
+			// TODO Auto-generated method stub
+			String res="";
+			ArrayList <String> details=params[0];
+			String urldisplay = "http://vitacademicsdev.appspot.com/captchasub/"+details.get(0)+"/"+details.get(1)+"/"+details.get(2);
+			try {
+				HttpClient client = new DefaultHttpClient();
+				HttpGet request = new HttpGet(urldisplay);
+				HttpResponse response;
+				response = client.execute(request);
+				res=EntityUtils.toString(response.getEntity());
+				
+				}
+			
+			catch (Exception e) {
+				res="error";
+				Log.e("Error", e.getMessage());
+				e.printStackTrace();
+			}
+			return res;
+		}
+		
+		protected void onPostExecute(String result) {
+
+			Intent returnIntent = new Intent();
+			if(result.equals("error")){
+				returnIntent.putExtra("result", "error");
+				setResult(RESULT_CANCELED, returnIntent);
+			}
+			else if(result.contains("timedout")){
+				returnIntent.putExtra("result", "timedout");
+				setResult(RESULT_CANCELED, returnIntent);
+			}
+			else if(result.contains("captchaerror")){
+				returnIntent.putExtra("result", "captchaerror");
+				setResult(RESULT_CANCELED, returnIntent);
+			}
+			else if(captchaSubmitCancelled)
+			{
+				Toast.makeText(MainActivity.this,"Cancelled",Toast.LENGTH_SHORT).show();
+
+			}
+			pdia.dismiss();
+				
+		}
+	}
+	
+	public static byte[] convertInputStreamToByteArray(InputStream is) throws IOException
+	{
+		BufferedInputStream bis = new BufferedInputStream(is);
+		ByteArrayOutputStream buf = new ByteArrayOutputStream();
+		int result = bis.read();
+		while(result !=-1)
+		{
+				byte b = (byte)result;
+					buf.write(b);
+			result = bis.read();
+		}
+		return buf.toByteArray();
+	}
+	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+		  ImageView bmImage;
+		  ProgressDialog pdia;
+
+		  public DownloadImageTask(ImageView bmImage) {
+		      this.bmImage = bmImage;
+		  }
+
+		  protected void onPreExecute() {
+			
+			  	pdia = new ProgressDialog(MainActivity.this);
+		        pdia.setMessage("Fetching Captcha");
+		        pdia.setCancelable(true);
+		        pdia.setOnCancelListener(new DialogInterface.OnCancelListener() {
+					
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						Display display = getWindowManager().getDefaultDisplay();
+						@SuppressWarnings("deprecation")
+						int width=(int)(display.getWidth()*0.6);
+						int height=(int)(width*25/130);
+						LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(width,height);
+					    parms.setMargins(10, 10, 10, 10);
+					    bmImage.setLayoutParams(parms);
+						bmImage.setImageResource(R.drawable.ic_captcha_error);
+						captchaLoadCancelled=true;
+					}
+				});
+		        pdia.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		        pdia.show();
+		        captchaLoadCancelled=false;
+		  }
+		  protected Bitmap doInBackground(String... urls) {
+		      String urldisplay = "http://vitacademicsdev.appspot.com/captcha/"+urls[0];
+		      Bitmap mIcon11 = null;
+		      try {
+		    	  HttpClient client = new DefaultHttpClient();
+		    	  HttpGet request = new HttpGet(urldisplay);
+		    	  HttpResponse response;
+		    	  response = client.execute(request);
+		          HttpEntity entity=response.getEntity();
+		    	  byte [] content = convertInputStreamToByteArray(entity.getContent());
+		    	  mIcon11 = BitmapFactory.decodeByteArray(content, 0, content.length);
+		      } catch (Exception e) {
+		    	  mIcon11=null;
+		          Log.e("Error", e.getMessage());
+		          e.printStackTrace();
+		      }
+		      return mIcon11;
+		  }
+		  
+
+		  protected void onPostExecute(Bitmap result) {
+			  Display display = getWindowManager().getDefaultDisplay();
+			  @SuppressWarnings("deprecation")
+			  int width=(int)(display.getWidth()*0.6);
+			  int height=(int)(width*25/130);
+			  LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(width,height);
+			  parms.setMargins(10, 10, 10, 10);
+			  bmImage.setLayoutParams(parms);
+			  if(result==null)
+			  {
+				  Toast.makeText(MainActivity.this, "Error fetching Captcha. Try again.", Toast.LENGTH_SHORT).show();
+				  bmImage.setImageResource(R.drawable.ic_captcha_error);
+			  }
+			  else if(captchaLoadCancelled)
+			  {
+			  	Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+			  	 bmImage.setImageResource(R.drawable.ic_captcha_error);
+			  }
+			  else
+			  {
+			      bmImage.setImageBitmap(result);
+			      
+			  }
+			  if (pdia.isShowing()) {
+				   pdia.cancel();
+				}
+		  }
+		}
 }

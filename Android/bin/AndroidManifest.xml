@@ -37,18 +37,6 @@
             android:theme="@style/Theme.Sherlock.Light.NoActionBar">
         </activity>
         <activity
-            android:name="com.karthikb351.vitacad.DownloadAttenDetails"
-            android:label="Getting Attendance Details"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Sherlock.Light.NoActionBar">
-        </activity>
-        <activity
-            android:name="com.karthikb351.vitacad.DownloadMarks"
-            android:label="Getting Marks"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Sherlock.Light.NoActionBar">
-        </activity>
-        <activity
             android:name="com.karthikb351.vitacad.GetStuff"
             android:label=""
             android:screenOrientation="portrait"
