@@ -344,7 +344,7 @@ public class MainActivity extends SherlockActivity {
 		}
 	}
 
-	void startCaptcha()
+	void startLoadCaptcha()
 	{
 		settings=getSharedPreferences("vitacad", 0);
 		regno=settings.getString("regno", " ");
