@@ -115,7 +115,7 @@ public class MainActivity extends SherlockActivity {
     	tv=(TextView)findViewById(R.id.updateOn);
     	listViewSub=(ListView)findViewById(R.id.list);
     	isMainRunning=true;
-    	loadAtten();
+    	startUp();
     }
     
     @Override
@@ -157,8 +157,8 @@ public class MainActivity extends SherlockActivity {
 					loginDialog();
 				else
 				{
-					Intent i = new Intent(getApplicationContext(),DownloadAttendance.class);
-				    startActivityForResult(i,DataHandler.ATTEN_REQUEST);
+					//Intent i = new Intent(getApplicationContext(),DownloadAttendance.class);
+				    //startActivityForResult(i,DataHandler.ATTEN_REQUEST);
 				}
         		return true;
         	case R.id.details:
@@ -176,51 +176,24 @@ public class MainActivity extends SherlockActivity {
         		return super.onOptionsItemSelected(item);
         }
     }
- 
-    void saveAtteToSharedPrefs(String source)
+	
+    void loadSubjects()
     {
-    	String tags[]={"sl_no","code","title","type","slot","regdate","attended","conducted","percentage","extra", "classnbr"};
-		JSONArray array;
-		ArrayList<String> list=new ArrayList();
-		try {
-			array = new JSONArray(source);
-		
-		int k=0;
-		for(int i=0;i<array.length();i++)
-		{	
-			if(i%10==0&&i!=0)
-			{
-				k=0;
-			}
-			editor.putString("Subject_"+k+"_"+tags[k],array.get(i).toString());
-			k++;
-		}
-		} catch (JSONException e) {
-			Toast.makeText(MainActivity.this, "Error saving attendance", Toast.LENGTH_SHORT).show();
-			e.printStackTrace();
-		}
+    	//TODO Load Subjects from memory using Datahandler and then populate the listview
     }
-    void initListview()
+    void saveAttendance(String json)
     {
-    	String tag[]={"sl_no","code","title","type","slot","regdate","att","con","per","extra"};
-		int size=settings.getInt("Subject_size", 0);
-    	for(int i=0;i<size;i++)
-    	{
-    		
-    	}
+    	//TODO Save JSON source into memory and then refresh the listview by calling loadSubjects();
+    	
+    	loadSubjects();
     }
-    void saveAttenToSharedPrefs(String source)
-    {
-    }
-    
-    void loadAtten()
+    void startUp()
     {
     	if(settings.getBoolean("newuser", true))
     	{
     		if(settings.getBoolean("credentials", false))
     		{
-    			Intent i = new Intent(MainActivity.this,DownloadAttendance.class);
-    			startActivityForResult(i, DataHandler.ATTEN_REQUEST);
+    			startLoadAttendance();
     		}
     		else
     		{
@@ -230,33 +203,7 @@ public class MainActivity extends SherlockActivity {
     	}
     	else
     	{
-    		String title,code,type,slot,nbr;
-    		int max, atten,size;
-            size=settings.getInt("Sub_size",0);
-            List listSub= new ArrayList();
-            for(int i=1;i<size;i++)
-    		{
-            	nbr=String.valueOf(i);
-            	code=settings.getString("Sub_"+nbr+"code","DB Error");
-    			title=settings.getString("Sub_"+nbr+"title","DB Error"); 
-    			type=settings.getString("Sub_"+nbr+"type","DB Error"); 
-    			slot=settings.getString("Sub_"+nbr+"slot","DB Error");
-    			atten=settings.getInt("Sub_"+nbr+"atten",0); 
-    			max=settings.getInt("Sub_"+nbr+"max",0);
-    			Log.i("loaded:",title+" "+code+" "+slot);
-    		}
-            listViewSub.setOnItemClickListener(otcl);
-            Time t=new Time(Time.getCurrentTimezone());
-            t.setToNow();
-            long now=t.toMillis(false);
-            long then=settings.getLong("updateTime",0);
-            String update;
-            update="Last refreshed: "+(String)DateUtils.getRelativeTimeSpanString(then,now,DateUtils.MINUTE_IN_MILLIS);
-            if(update==null||then==0)
-            	update="Not updated. Go to Menu->Refresh";
-        	tv.setText(update);
-            listViewSub.setAdapter( new SubjectAdapter(MainActivity.this, R.layout.single_item_sub, listSub ) );
-    		
+    		loadSubjects();
     	}
     	
     	
@@ -335,7 +282,7 @@ public class MainActivity extends SherlockActivity {
     		editor.putBoolean("credentials", true);
     		editor.commit();
     		if(settings.getBoolean("newuser", true))
-    				loadAtten();
+    				startUp();
     	}
     }
 	
