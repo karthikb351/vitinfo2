@@ -23,6 +23,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.text.format.Time;
+import android.widget.Toast;
 
 public class DataHandler {
 	Context context;
@@ -36,17 +38,7 @@ public class DataHandler {
 	int subnum;
 	
 	private ArrayList<Attendance> details;
-	
-	private String subjectName;
-	private String slot;
-	private String type;
-	private String percentage;
-	private String subjectCode;
-	private String regDate;
-	private String classnbr;
-	private int Attended;
 	private int subLength;
-	private int Conducted;
 	
 	
 	
@@ -56,15 +48,9 @@ public class DataHandler {
 		setSubLength(preferences.getInt("NUMBEROFSUBJECTS", 0));
 	}
 	
-	public DataHandler(Context context , int subnum){
-		this.subnum = subnum;
-		preferences = PreferenceManager.getDefaultSharedPreferences(context);
-		setSubLength(preferences.getInt("NUMBEROFSUBJECTS", 0));
-		loadAttendance();
-	}
-	
-	private void loadAttendance(){
+	public Subject loadSubject(int subnum){
 		ArrayList <String> str = new ArrayList<String>();
+		Subject sub=new Subject();
 		str = getList("ATTENDANCE_LIST");
 		int breaker = 0;
 		for (int i = 0 ; i < str.size() ; i++){
@@ -72,24 +58,25 @@ public class DataHandler {
 				breaker = i+1;
 			}
 		}
-		setSubjectCode(str.get(breaker));
-		setSubjectName(str.get(breaker+1));
-		setType(str.get(breaker+2));
-		setSlot(str.get(breaker+3));
+		sub.code=str.get(breaker);
+		sub.title=str.get(breaker+1);
+		sub.type=str.get(breaker+2);
+		sub.slot=str.get(breaker+3);
 		
 		try{
-			setAttended(Integer.parseInt(str.get(breaker+4)));
-			setConducted(Integer.parseInt(str.get(breaker+5)));
-			setPercentage(str.get(breaker+6));
+			sub.attended=Integer.parseInt(str.get(breaker+4));
+			sub.conducted=Integer.parseInt(str.get(breaker+5));
 		}
 		catch (Exception e){
 			e.printStackTrace();
-			setAttended(0);
-			setConducted(0);
-			setPercentage("Not Uploaded");
+			sub.attended=0;
+			sub.conducted=0;
 		}
-		setRegDate(str.get(breaker+7));
-		setClassNbr(str.get(breaker+8));
+		sub.percentage=SubjectAdapter.getPer(sub.attended,sub.conducted);
+		sub.regdate=str.get(breaker+7);
+		sub.classnbr=str.get(breaker+8);
+		sub.putAttendanceDetails(str.get(breaker+9));
+		return sub;
 	}
 	
 	public void saveAttendance(String jsonInput){
@@ -114,40 +101,26 @@ public class DataHandler {
 					att.add(json.getString("percentage")); //6
 					att.add(json.getString("regdate")); //7
 					att.add(json.getString("classnbr")); //8
-					JSONArray d = json.getJSONArray("details");
-					for (int k = 0 ; k<d.length();k++){
-						att.add(d.getString(0));						}
+					att.add(json.getJSONArray("details").toString()); //9
 				}
 				
 				Editor edit = preferences.edit();
 				edit.putInt("NUMBEROFSUBJECTS", count);
+				Time now = new Time();
+				now.setToNow();
+				edit.putLong("updateOn", now.toMillis(true));
 				edit.commit();
-				
 				saveList("ATTENDANCE_LIST" , att);
+				Toast.makeText(context, "Refreshed attendance", Toast.LENGTH_SHORT).show();
 			} catch (JSONException e) {
+				
+				Toast.makeText(context, "Oops. Something went wrong :(", Toast.LENGTH_SHORT).show();
 			}			
 		}
 		else{
-			
+			Toast.makeText(context, "Error fetching attendance", Toast.LENGTH_SHORT).show();
 		}
 	}
-/*   public void saveAttendance(ArrayList<String> list){
-		ArrayList <String> str = new ArrayList<String>();
-		int count = 0;
-		for (int i = 0 ; i<list.size(); i++){
-			if (i != 0 && i != 1){
-				if ((i-2)%10 == 0){
-					str.add("BREAK"+count); count+=1;}
-				str.add(list.get(i).toString());				
-			}
-		}
-		Editor edit = preferences.edit();
-		
-		edit.putInt("NUMBEROFSUBJECTS", count-1);
-		edit.commit();
-		
-		saveList("ATTENDANCE_LIST" , str);
-	}*/
 	
 	public void saveList(String key , ArrayList<String> list){
 		Editor edit = preferences.edit();
@@ -177,78 +150,6 @@ public class DataHandler {
 		return temp;
 		
 	}
-
-	public String getSubjectName() {
-		return subjectName;
-	}
-
-	public void setSubjectName(String subjectName) {
-		this.subjectName = subjectName;
-	}
-
-	public String getSlot() {
-		return slot;
-	}
-
-	public void setSlot(String slot) {
-		this.slot = slot;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getPercentage() {
-		return percentage;
-	}
-
-	public void setPercentage(String percentage) {
-		this.percentage = percentage;
-	}
-
-	public int getAttended() {
-		return Attended;
-	}
-
-	public void setAttended(int attended) {
-		Attended = attended;
-	}
-
-	public int getConducted() {
-		return Conducted;
-	}
-
-	public void setConducted(int conducted) {
-		Conducted = conducted;
-	}
-
-	public String getSubjectCode() {
-		return subjectCode;
-	}
-
-	public void setSubjectCode(String subjectCode) {
-		this.subjectCode = subjectCode;
-	}
-
-	public String getRegDate() {
-		return regDate;
-	}
-
-	public void setRegDate(String regDate) {
-		this.regDate = regDate;
-	}
-	public String getClassNbr() {
-		return classnbr;
-	}
-
-	public void setClassNbr(String classnbr) {
-		this.classnbr = classnbr;
-	}
-
 
 	public ArrayList<Attendance> getDetails() {
 		return details;

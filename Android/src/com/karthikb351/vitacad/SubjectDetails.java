@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -15,13 +16,16 @@ import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,10 +41,11 @@ public class SubjectDetails extends SherlockActivity {
 		cl_amber=Color.parseColor("#FF8300");
 	SharedPreferences settings;
 	String title,code,type,slot,nbr;
+	Subject sub;
 	boolean progFlag=false;
 	int max, atten,count=1,size,pos,globe_makeup,globe_bunk,prev_bunk,prev_makeup,class_offset;
-	TextView tv_title,tv_slot,tv_type,tv_code,tv_atten,tv_net_per,bunk_val,makeup_val;
-	ListView list;
+	TextView tv_title,tv_slot,tv_type,tv_code,tv_atten,tv_net_per,bunk_val,makeup_val,atten_updated_date,atten_updated_status;
+	RelativeLayout atten_popup;
 	ProgressBar progBar;
 	Button bunk_add,bunk_sub, makeup_add, makeup_sub;
 	@Override
@@ -54,6 +59,8 @@ public class SubjectDetails extends SherlockActivity {
 		tv_type=(TextView)findViewById(R.id.type_detailed);
 		tv_atten=(TextView)findViewById(R.id.atten_detailed);
 		tv_net_per=(TextView)findViewById(R.id.net_per);
+		atten_updated_date=(TextView)findViewById(R.id.atten_lastUpdatedDate);
+		atten_updated_status=(TextView)findViewById(R.id.atten_lastUpdatedStatus);
 		bunk_val=(TextView)findViewById(R.id.bunk_val);
 		makeup_val=(TextView)findViewById(R.id.makeup_val);
 		progBar=(ProgressBar)findViewById(R.id.progressBar_detailed);
@@ -61,15 +68,16 @@ public class SubjectDetails extends SherlockActivity {
 		bunk_sub=(Button)findViewById(R.id.bunk_sub);
 		makeup_add=(Button)findViewById(R.id.makeup_add);
 		makeup_sub=(Button)findViewById(R.id.makeup_sub);
+		atten_popup=(RelativeLayout)findViewById(R.id.atten_details_button);
 		bunk_add.setOnClickListener(ocl);
 		bunk_sub.setOnClickListener(ocl);
 		makeup_add.setOnClickListener(ocl);
 		makeup_sub.setOnClickListener(ocl);
-
-		
-		settings = getSharedPreferences("vitacad", 0);
+		settings = PreferenceManager.getDefaultSharedPreferences(SubjectDetails.this);
 		Intent i=getIntent();
 		pos=i.getIntExtra("index", -1);
+		DataHandler dat=new DataHandler(SubjectDetails.this);
+		sub=dat.loadSubject(pos);
 		load();
 		globe_makeup=0;
 		globe_bunk=0;
@@ -99,6 +107,18 @@ public class SubjectDetails extends SherlockActivity {
 					if(globe_makeup!=0)
 						onMakeup(false);
 					break;
+				case R.id.atten_details_button:
+					View view = getLayoutInflater().inflate(R.layout.atten_details_popup, null);
+					ListView lv=(ListView)view.findViewById(R.id.atten_details_popup_listview);
+					lv.setEnabled(false);
+					List listAtt= new ArrayList();
+					for(int i=0;i<sub.attendance_length;i++)
+						listAtt.add(sub.attendance[i]);
+					lv.setAdapter(new AttenAdapter(SubjectDetails.this, R.layout.single_item_atten, listAtt));
+					new AlertDialog.Builder(SubjectDetails.this)
+					.setTitle(title)
+					.setView(view)
+					.create().show();
 			}
 			
 		}
@@ -172,13 +192,12 @@ public class SubjectDetails extends SherlockActivity {
 	}
 	void load()
 	{
-		nbr=String.valueOf(pos);
-		code=settings.getString("Sub_"+nbr+"code","DB Error");
-		title=settings.getString("Sub_"+nbr+"title","DB Error"); 
-		type=settings.getString("Sub_"+nbr+"type","DB Error"); 
-		slot=settings.getString("Sub_"+nbr+"slot","DB Error");
-		atten=settings.getInt("Sub_"+nbr+"atten",0); 
-		max=settings.getInt("Sub_"+nbr+"max",0);
+		code=sub.code;
+		title=sub.title;
+		type=sub.type;
+		slot=sub.slot;
+		atten=sub.attended;
+		max=sub.conducted;
 		class_offset = 1;
 		if(type.contains("Lab"))
 		for( int i=0; i<slot.length(); i++ ) {
@@ -186,7 +205,21 @@ public class SubjectDetails extends SherlockActivity {
 		        class_offset++;
 		    } 
 		}
-		Log.i("details:",code+title+slot);
+		if(sub.att_valid)
+		{
+			atten_popup.setOnClickListener(ocl);
+			atten_popup.setEnabled(true);
+			atten_updated_date.setText(sub.attendance[0].date);
+			atten_updated_status.setText(sub.attendance[0].status);
+			if(sub.attendance[0].status.equalsIgnoreCase("absent"))
+			{
+				atten_popup.setBackgroundColor(Color.parseColor("#FACACA"));
+			}
+		}
+		else
+		{
+			atten_updated_date.setText("Attendance not uploaded");
+		}
 	}
 	
 	float getPer(int num, int div)

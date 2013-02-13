@@ -188,18 +188,26 @@
 
 				    </RelativeLayout>
 					<RelativeLayout 
-					    android:layout_width="fill_parent"
+					    android:layout_width="wrap_content"
 					    android:layout_height="wrap_content"
 					    android:layout_below="@+id/atten_toolbar"
+					    android:id="@+id/atten_details_button"
 					    android:layout_margin="5dp"
-					    android:padding="5dp">
+					    android:padding="10dp">
 					    <TextView 
-					        android:id="@+id/atten_lastUpdated"
-					        android:text="Last Updated on: 26/2/2013"
-					        android:layout_width="fill_parent"
-					        android:layout_height="fill_parent"
-					    	android:gravity="center_horizontal"
-					    	android:textAppearance="?android:attr/textAppearanceMedium" />
+					        android:id="@+id/atten_lastUpdatedDate"
+					        android:text="Attendance not uploaded"
+					        android:layout_width="wrap_content"
+					        android:layout_height="wrap_content"
+					    	android:layout_alignParentLeft="true"
+					    	 />
+					    <TextView 
+					        android:id="@+id/atten_lastUpdatedStatus"
+					        android:text=" "
+					        android:layout_width="wrap_content"
+					        android:layout_height="wrap_content"
+					    	android:layout_alignParentRight="true"
+					    	/>
 					</RelativeLayout>
 
 			</RelativeLayout>

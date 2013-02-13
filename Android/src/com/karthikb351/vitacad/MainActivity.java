@@ -23,10 +23,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.text.format.DateUtils;
 import android.text.format.Time;
@@ -66,6 +70,7 @@ public class MainActivity extends SherlockActivity {
 	boolean captchaSubmitCancelled=false;
 	boolean captchaLoadCancelled=false;
 	boolean isMainRunning;
+	boolean newuser=false, statusExplicit=false;
 	String DOB, REGNO, whoisnext=null;
 	ListView listViewSub;
 	TextView tv;
@@ -75,12 +80,21 @@ public class MainActivity extends SherlockActivity {
     AlertDialog captchadialog;
     ImageView imCaptcha;
     Button refresh;
+    int app_version;
 	DownloadImageTask currentLCTask;
 	SubmitCaptchaTask currentSCTask;
 	EditText captcha_edittext;
 	String captcha="";
 	void extrasInit()
 	{
+		try {
+			
+			app_version=getPackageManager().getPackageInfo(MainActivity.this.getPackageName(),0).versionCode;
+			
+		} catch (NameNotFoundException e) {
+			app_version=99;
+			e.printStackTrace();
+		}
     	JSONObject crittercismConfig = new JSONObject();
     	mInstance = GoogleAnalytics.getInstance(this);
     	mTracker = mInstance.getTracker("UA-38195928-1");
@@ -103,7 +117,7 @@ public class MainActivity extends SherlockActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	extrasInit();
-    	settings = getSharedPreferences("vitacad", 0);
+    	settings = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
     	TelephonyManager tManager = (TelephonyManager)MainActivity.this.getSystemService(Context.TELEPHONY_SERVICE);
     	String uid = tManager.getDeviceId();
     	Crittercism.setUsername(settings.getString("regno", "USERNAME"));
@@ -116,9 +130,15 @@ public class MainActivity extends SherlockActivity {
     	listViewSub=(ListView)findViewById(R.id.list);
     	isMainRunning=true;
     	startUp();
+    	checkStatus();
     }
     
-    @Override
+    private void checkStatus() {
+		
+    	new CheckStatusTask().execute();
+		
+	}
+	@Override
     protected void onPause() {
     	super.onPause();
     	isMainRunning=false;
@@ -147,19 +167,16 @@ public class MainActivity extends SherlockActivity {
     	
         switch (item.getItemId()) {
         	case R.id.about:
-        		mTracker.sendEvent("ui_action", "button_press", "about_button", 0l);
+        		mTracker.sendEvent("ui_action", "button_press", "about", 0l);
             	hs.showSupport(MainActivity.this);
         		return true;
         	
         	case R.id.refreshAtt:
-        		mTracker.sendEvent("ui_action", "button_press", "refresh_attendance_button", 0l);
+        		mTracker.sendEvent("ui_action", "button_press", "refresh", 0l);
         		if(!settings.getBoolean("credentials", false))
 					loginDialog();
 				else
-				{
-					//Intent i = new Intent(getApplicationContext(),DownloadAttendance.class);
-				    //startActivityForResult(i,DataHandler.ATTEN_REQUEST);
-				}
+					startLoadAttendance();
         		return true;
         	case R.id.details:
         		loginDialog();
@@ -179,18 +196,41 @@ public class MainActivity extends SherlockActivity {
 	
     void loadSubjects()
     {
-    	//TODO Load Subjects from memory using Datahandler and then populate the listview
+    	List listSub= new ArrayList();
+    	DataHandler dat=new DataHandler(MainActivity.this);
+    	int length=dat.getSubLength();
+    	for(int i=0;i<length;i++)
+    	{
+    		listSub.add(dat.loadSubject(i));
+    	}
+    	listViewSub.setAdapter(new SubjectAdapter(MainActivity.this, R.layout.single_item_sub, listSub));
+    	listViewSub.setOnItemClickListener(otcl);
+    	long time=settings.getLong("updateOn", -1);
+    	Time now=new Time();
+    	now.setToNow();
+    	String text=DateUtils.getRelativeTimeSpanString(time, now.toMillis(true), 
+                DateUtils.MINUTE_IN_MILLIS).toString();
+    	
+    	if(time!=-1)
+    	{
+    		tv.setText("Last refreshed "+text);
+    	}
+    	
     }
     void saveAttendance(String json)
     {
-    	//TODO Save JSON source into memory and then refresh the listview by calling loadSubjects();
-    	
+    	DataHandler dat=new DataHandler(MainActivity.this);
+    	dat.saveAttendance(json);
+    	editor=settings.edit();
+    	editor.putBoolean("newuser", false);
+    	editor.commit();
     	loadSubjects();
     }
     void startUp()
     {
     	if(settings.getBoolean("newuser", true))
     	{
+    		Log.i("status","newguy");
     		if(settings.getBoolean("credentials", false))
     		{
     			startLoadAttendance();
@@ -213,7 +253,7 @@ public class MainActivity extends SherlockActivity {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 		{
 			Intent a=new Intent(MainActivity.this, SubjectDetails.class);
-			a.putExtra("index", position+1);
+			a.putExtra("index", position);
 			startActivity(a);
 		}
 	};
@@ -280,6 +320,7 @@ public class MainActivity extends SherlockActivity {
     		editor.putString("regno", REGNO);
     		editor.putString("dob", DOB);
     		editor.putBoolean("credentials", true);
+    		Log.i("staus","Valid credentials");
     		editor.commit();
     		if(settings.getBoolean("newuser", true))
     				startUp();
@@ -310,13 +351,6 @@ public class MainActivity extends SherlockActivity {
 	}
     void startLoadAttendance()
 	{
-		if(settings.getBoolean("newuser", true))
-		{
-			loginDialog();
-		}
-		else
-		{
-			settings=getSharedPreferences("vitacad", 0);
 			regno=settings.getString("regno", " ");
 			dob=settings.getString("dob", " ");
 			currentTask=new LoadAttendanceTask();
@@ -324,11 +358,9 @@ public class MainActivity extends SherlockActivity {
 			details.add(0,regno);
 			details.add(1,dob);
 			currentTask.execute(details);
-		}
 	}
 	void startCaptcha()
 	{
-		settings=getSharedPreferences("vitacad", 0);
 		String regno=settings.getString("regno", " ");
 		String dob=settings.getString("dob", " ");
 		view= getLayoutInflater().inflate(R.layout.captcha_dialog, null);
@@ -377,6 +409,146 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 			}
 		}
 	};
+	
+	
+	private class CheckStatusTask extends AsyncTask<Void, Void, String>
+	{
+		ProgressDialog pdia;
+		protected void onPreExecute() {
+			if(statusExplicit)
+			{
+			  	pdia = new ProgressDialog(MainActivity.this);
+		        pdia.setMessage("Check our systems");
+		        pdia.setCancelable(false);
+		        pdia.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		        pdia.show();
+			}
+	  }
+		@Override
+		protected String doInBackground(Void... params) {
+			String res="";
+			String url = "http://vitacademicsdev.appspot.com/status";
+			try {
+				HttpClient client = new DefaultHttpClient();
+				HttpGet request = new HttpGet(url);
+				HttpResponse response;
+				response = client.execute(request);
+				res=EntityUtils.toString(response.getEntity());
+				}
+			
+			catch (Exception e) {
+				res="error";
+				Log.e("Error", e.getMessage());
+				e.printStackTrace();
+				}
+			return res;
+		}
+		@Override
+		protected void onPostExecute(String result) {
+			
+			String status=" ", changelog=" ", appv=" ";
+			boolean latest=true,error=false;
+			if(result.equals("error"))
+			{
+				error=true;
+			}
+			if(pdia!=null)	
+			{
+				if(pdia.isShowing())
+				{
+					pdia.dismiss();
+				}		
+			}
+				try {
+					JSONObject j=new JSONObject(result);
+					appv=j.get("version").toString();
+					changelog=j.get("changelog").toString();
+					status=j.get("status_academics").toString();
+					if(Integer.parseInt(appv)>app_version)
+						latest=false;
+					} catch (JSONException e) {
+					status="academics.vit.ac.in seems to be down";
+					error=true;
+					e.printStackTrace();
+				}
+			if(!error)
+			{
+				if(isMainRunning)
+				{
+					if(latest)
+					{
+						AlertDialog.Builder build = new AlertDialog.Builder(MainActivity.this);
+						build.setTitle("Status Check");
+						build.setMessage("Status:"+status+"\nChange Log:"+changelog+"\nApp Version:"+"You are running the latest version");
+						build.setCancelable(true);
+						build.setPositiveButton("Okay", null);
+						build.create().show();
+					}
+					else
+					{
+						AlertDialog.Builder build = new AlertDialog.Builder(MainActivity.this);
+						build.setTitle("Update Available");
+						build.setMessage("Please update to the latest version of the app");
+						android.content.DialogInterface.OnClickListener ocl = new android.content.DialogInterface.OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								
+								switch(which)
+								{
+									case DialogInterface.BUTTON_POSITIVE:
+										Intent intent = new Intent(Intent.ACTION_VIEW);
+										intent.setData(Uri.parse("market://details?id=com.karthikb351.vitinfo2"));
+										startActivity(intent);
+										dialog.dismiss();
+										break;
+									case DialogInterface.BUTTON_NEGATIVE:
+										
+										android.content.DialogInterface.OnClickListener ocl1 = new android.content.DialogInterface.OnClickListener() {
+											
+											@Override
+											public void onClick(DialogInterface dialog, int which) {
+												
+												switch(which)
+												{
+													case DialogInterface.BUTTON_POSITIVE:
+														break;
+													case DialogInterface.BUTTON_NEGATIVE:
+														Intent intent = new Intent(Intent.ACTION_VIEW);
+														intent.setData(Uri.parse("market://details?id=com.karthikb351.vitinfo2"));
+														startActivity(intent);
+														dialog.dismiss();
+													default:
+														break;
+												}
+												
+											}
+										};
+										new AlertDialog.Builder(MainActivity.this)
+										.setMessage("We cannot guarantee the proper functioning of older versions of the app. Please update to ensure compatability with our servers")
+										.setPositiveButton("I Understand",ocl1)
+										.setNegativeButton("Update", ocl1)
+										.create().show();
+										break;
+									default:
+										break;
+								}
+								
+							}
+						};
+						
+						
+						
+						build.setCancelable(true);
+						build.setPositiveButton("Update", ocl);
+						build.setNegativeButton("Cancel", ocl);
+						build.create().show();
+					}
+				}
+			}
+				
+		}
+	}
     
 	private class LoadAttendanceTask extends AsyncTask<ArrayList <String>, Void, String>
 	{
@@ -385,7 +557,8 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 			attenCancelled=false;
 		  	pdia = new ProgressDialog(MainActivity.this);
 	        pdia.setMessage("Loading Attendance");
-	        pdia.setCancelable(false);
+	        pdia.setCancelable(true);
+	        pdia.setCanceledOnTouchOutside(false);
 	        pdia.setOnCancelListener(new DialogInterface.OnCancelListener() {
 				
 				@Override
@@ -398,7 +571,6 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 	  }
 		@Override
 		protected String doInBackground(ArrayList <String>... params) {
-			// TODO Auto-generated method stub
 			String res="";
 			ArrayList <String> details=params[0];
 			String url = "http://vitacademicsdev.appspot.com/attj/"+details.get(0)+"/"+details.get(1);
@@ -435,8 +607,7 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 				}
 				else if(result.contains("valid"))
 				{
-					Log.i("json", result);
-					gotAtten(result);
+					saveAttendance(result);
 					whoisnext=null;
 				}
 				else
@@ -466,11 +637,11 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 		  	pdia = new ProgressDialog(MainActivity.this);
 	        pdia.setMessage("Fetching Captcha");
 	        pdia.setCancelable(true);
+	        pdia.setCanceledOnTouchOutside(false);
 	        pdia.setOnCancelListener(new DialogInterface.OnCancelListener() {
 				
 				@Override
 				public void onCancel(DialogInterface dialog) {
-				    bmImage.setVisibility(View.INVISIBLE);
 					captchaLoadCancelled=true;
 				}
 			});
@@ -499,26 +670,30 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 	
 	
 	  protected void onPostExecute(Bitmap result) {
-		  Display display = getWindowManager().getDefaultDisplay();
-		  @SuppressWarnings("deprecation")
-		  int width=(int)(display.getWidth()*0.6);
-		  int height=(int)(width*25/130);
-		  LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(width,height);
-		  parms.setMargins(10, 10, 10, 10);
-		  bmImage.setLayoutParams(parms);
-		  if(result==null)
+		  
+		  if(!captchaLoadCancelled)
 		  {
-			  Toast.makeText(MainActivity.this, "Error fetching Captcha. Try again.", Toast.LENGTH_SHORT).show();
-			  bmImage.setImageResource(R.drawable.ic_captcha_error);
-		  }
-		  else if(captchaLoadCancelled)
-		  {
-		  	Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+			  Display display = getWindowManager().getDefaultDisplay();
+			  @SuppressWarnings("deprecation")
+			  int width=(int)(display.getWidth()*0.6);
+			  int height=(int)(width*25/130);
+			  LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(width,height);
+			  parms.setMargins(10, 10, 10, 10);
+			  bmImage.setLayoutParams(parms);
+			  if(result==null)
+			  {
+				  Toast.makeText(MainActivity.this, "Error fetching Captcha. Try again.", Toast.LENGTH_SHORT).show();
+				  bmImage.setImageResource(R.drawable.ic_captcha_error);
+			  }
+			  else
+			  {
+			      bmImage.setImageBitmap(result);
+			      Toast.makeText(MainActivity.this, "Got Captcha!", Toast.LENGTH_SHORT).show();
+			  }
 		  }
 		  else
 		  {
-		      bmImage.setImageBitmap(result);
-		      
+		  	Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
 		  }
 		  if (pdia.isShowing()) {
 			   pdia.cancel();
@@ -536,6 +711,7 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 		  	pdia = new ProgressDialog(MainActivity.this);
 	        pdia.setMessage("Submitting Captcha");
 	        pdia.setCancelable(true);
+	        pdia.setCanceledOnTouchOutside(false);
 	        pdia.setOnCancelListener(new DialogInterface.OnCancelListener() {
 				
 				@Override
@@ -548,7 +724,6 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 	  }
 		@Override
 		protected String doInBackground(ArrayList <String>... params) {
-			// TODO Auto-generated method stub
 			String res="";
 			ArrayList <String> details=params[0];
 			String urldisplay = "http://vitacademicsdev.appspot.com/captchasub/"+details.get(0)+"/"+details.get(1)+"/"+details.get(2);
@@ -622,9 +797,5 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 			result = bis.read();
 		}
 		return buf.toByteArray();
-	}
-	public void gotAtten(String result) {
-		// TODO Auto-generated method stub
-		
 	}
 }

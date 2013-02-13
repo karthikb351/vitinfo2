@@ -13,6 +13,22 @@ class MainPage(webapp2.RequestHandler):
     def get(self):
         self.response.out.write('<h1>VITacademics Scraping Engine [DEVELOPMENT SERVER]</h1> <h2>Running On Google App Engine.</h2> \n<h4>Last Update: 4th February 2013 </h4><h4>\n\n(c) 2013 CollegeCODE</h4>')
 
+class Status(webapp2.RequestHandler):
+	def get(self):
+                sub={}
+                sub.update({'version':'10'})
+                sub.update({'changelog':'New look and stuff'})
+                def create_callback(rpc):
+                    return lambda: handle_result(rpc)
+                def handle_result(rpc):
+                    result = rpc.get_result()
+                    status=None
+                rpc = urlfetch.create_rpc()
+                rpc.callback = create_callback(rpc)
+                urlfetch.make_fetch_call(rpc, "https://academics.vit.ac.in/parent/parent_login.asp")
+                rpc.wait()
+                sub.update({'status_academics':'Everything seems to be running fine'})
+                self.response.write(json.dumps(sub))
 class DetailsExtractor(webapp2.RequestHandler):
 	def get(self, regno, dob, subject):
 		regno = regno.upper()
@@ -240,10 +256,7 @@ class AttExtractor(webapp2.RequestHandler):
 					self.response.write("timedout")
 			else:
 				self.response.write("timedout")
-class Status(webapp2.RequestHandler):
-	def get(self):
-                status="Everything is runni
-
+				
 class JAttendance(webapp2.RequestHandler):
 	def get(self, regno, dob):
 		regno = regno.upper()
@@ -252,95 +265,98 @@ class JAttendance(webapp2.RequestHandler):
 		thecookiename = "ASPSESSIONIDQUFTTQDA"
 		user_key = db.Key.from_path('User', regno, parent=None, namespace=None)
 		x = db.get(user_key)
-		thevalue = x.cookievalue
-		thecookiename = x.cookiename
-		thetime=x.sestime
-		nowtime=datetime.datetime.now()
-		if((thetime-nowtime).total_seconds()<30):
-			br1 = _mechanize.Browser()
-			ck = cookielib.Cookie(version=0, name=thecookiename, value=thevalue, port=None, port_specified=False, domain='academics.vit.ac.in', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=True, expires=None, discard=True, comment=None, comment_url=None, rest={'HttpOnly': None}, rfc2109=False)
-			newcj = cookielib.CookieJar()
-			newcj.set_cookie(ck)
-			br1.set_cookiejar(newcj)
-			br1.set_handle_equiv(True)
-			br1.set_handle_redirect(True)
-			br1.set_handle_referer(True)
-			r=br1.open('https://academics.vit.ac.in/parent/attn_report.asp?sem=WS')
-			br1.set_handle_robots(False)
-			if(r.geturl()=="https://academics.vit.ac.in/parent/attn_report.asp?sem=WS"):
-                                self.response.write("valid%")
-				page=r.read()
-				soup=BeautifulSoup(page)
-                                trs=soup.findAll('tr', attrs={"bgcolor":"#E6F2FF"})
-                                count=0
-                                k=0
-                                subs=[]
-                                for tr in trs:
-                                    sub={}
-                                    k=0
-                                    if(count==0):
-                                        count=0
-                                    else:
-                                        tds = tr.findAll('input')
-                                        rows = tr.findAll('td')
-                                        for row in rows:
-                                            sub.update({keys[k]:str(row.text)})
-                                            k=k+1
-                                        classnbrs = tr.findAll('input', attrs={"name":"classnbr"})
-                                        if(len(classnbrs)==0):
-                                            sub.update({keys[k]:'null'})
-                                            k=k+1
-                                        else:
-                                            for classnbr in classnbrs:
-                                                sub.update({keys[k]:str(classnbr['value'])})
-                                                k=k+1
-                                        subs.append(sub)
-                                    count=count+1
-				for cook in newcj:
-					x.cookievalue = cook.value
-					x.cookiename = cook.name
-
-				cookiehead=x.cookiename+"="+x.cookievalue
-                                head={'Cookie':cookiehead}
-				x.sestime=nowtime
-				x.att_count=x.att_count+1
-				x.tot_count=x.tot_count+1
-				x.put()
-				rpcs = []
-				classnbrs = []
-				iterator=subs.__iter__()
-				def create_callback(rpc):
-                                    return lambda: handle_result(rpc)
-                                def handle_result(rpc):
-                                    result = rpc.get_result()
-                                    page=result.content
-                                    details=BeautifulSoup(page)
-                                    last = details("td")
-                                    lastArray = []
-                                    for i in range(19, len(last), 2):
-                                        lastArray.append(str(last[i].text))
-                                    lastArrayNew = filter (lambda a: a != "-", lastArray)
-                                    sub=iterator.next()
-                                    sub.update({'details':lastArrayNew})
-				for sub in subs:
-                                    clsnbr=sub['classnbr']
-                                    rpc = urlfetch.create_rpc()
-                                    rpc.callback = create_callback(rpc)
-                                    post={}
-                                    post['semcode']='WINSEM2012-13'
-                                    post['classnbr']=clsnbr
-                                    post['from_date']='02-Jan-2013'
-                                    post['to_date']='08-May-2013'
-                                    fpost=urllib.urlencode(post)
-                                    urlfetch.make_fetch_call(rpc, "https://academics.vit.ac.in/parent/attn_report_details.asp", method='POST', payload=fpost, headers=head)
-                                    rpcs.append(rpc)
-                                for rpc in rpcs:
-                                    rpc.wait()
-                                self.response.write(json.dumps(subs))
-			else:
-				self.response.write("timedout")
-		else:
+		if(x==None):
 			self.response.write("timedout")
+		else:
+                    thevalue = x.cookievalue
+                    thecookiename = x.cookiename
+                    thetime=x.sestime
+                    nowtime=datetime.datetime.now()
+                    if((thetime-nowtime).total_seconds()<30):
+                            br1 = _mechanize.Browser()
+                            ck = cookielib.Cookie(version=0, name=thecookiename, value=thevalue, port=None, port_specified=False, domain='academics.vit.ac.in', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=True, expires=None, discard=True, comment=None, comment_url=None, rest={'HttpOnly': None}, rfc2109=False)
+                            newcj = cookielib.CookieJar()
+                            newcj.set_cookie(ck)
+                            br1.set_cookiejar(newcj)
+                            br1.set_handle_equiv(True)
+                            br1.set_handle_redirect(True)
+                            br1.set_handle_referer(True)
+                            r=br1.open('https://academics.vit.ac.in/parent/attn_report.asp?sem=WS')
+                            br1.set_handle_robots(False)
+                            if(r.geturl()=="https://academics.vit.ac.in/parent/attn_report.asp?sem=WS"):
+                                    self.response.write("valid%")
+                                    page=r.read()
+                                    soup=BeautifulSoup(page)
+                                    trs=soup.findAll('tr', attrs={"bgcolor":"#E6F2FF"})
+                                    count=0
+                                    k=0
+                                    subs=[]
+                                    for tr in trs:
+                                        sub={}
+                                        k=0
+                                        if(count==0):
+                                            count=0
+                                        else:
+                                            tds = tr.findAll('input')
+                                            rows = tr.findAll('td')
+                                            for row in rows:
+                                                sub.update({keys[k]:str(row.text)})
+                                                k=k+1
+                                            classnbrs = tr.findAll('input', attrs={"name":"classnbr"})
+                                            if(len(classnbrs)==0):
+                                                sub.update({keys[k]:'null'})
+                                                k=k+1
+                                            else:
+                                                for classnbr in classnbrs:
+                                                    sub.update({keys[k]:str(classnbr['value'])})
+                                                    k=k+1
+                                            subs.append(sub)
+                                        count=count+1
+                                    for cook in newcj:
+                                            x.cookievalue = cook.value
+                                            x.cookiename = cook.name
+
+                                    cookiehead=x.cookiename+"="+x.cookievalue
+                                    head={'Cookie':cookiehead}
+                                    x.sestime=nowtime
+                                    x.att_count=x.att_count+1
+                                    x.tot_count=x.tot_count+1
+                                    x.put()
+                                    rpcs = []
+                                    classnbrs = []
+                                    iterator=subs.__iter__()
+                                    def create_callback(rpc):
+                                        return lambda: handle_result(rpc)
+                                    def handle_result(rpc):
+                                        result = rpc.get_result()
+                                        page=result.content
+                                        details=BeautifulSoup(page)
+                                        last = details("td")
+                                        lastArray = []
+                                        for i in range(19, len(last), 2):
+                                            lastArray.append(str(last[i].text))
+                                        lastArrayNew = filter (lambda a: a != "-", lastArray)
+                                        sub=iterator.next()
+                                        sub.update({'details':lastArrayNew})
+                                    for sub in subs:
+                                        clsnbr=sub['classnbr']
+                                        rpc = urlfetch.create_rpc()
+                                        rpc.callback = create_callback(rpc)
+                                        post={}
+                                        post['semcode']='WINSEM2012-13'
+                                        post['classnbr']=clsnbr
+                                        post['from_date']='02-Jan-2013'
+                                        post['to_date']='08-May-2013'
+                                        fpost=urllib.urlencode(post)
+                                        urlfetch.make_fetch_call(rpc, "https://academics.vit.ac.in/parent/attn_report_details.asp", method='POST', payload=fpost, headers=head)
+                                        rpcs.append(rpc)
+                                    for rpc in rpcs:
+                                        rpc.wait()
+                                    self.response.write(json.dumps(subs))
+                            else:
+                                    self.response.write("timedout")
+                    else:
+                            self.response.write("timedout")
 
 class Cleanup(webapp2.RequestHandler):
 	def get(self):
@@ -403,4 +419,4 @@ class User(db.Model):
 
 
 
-app = webapp2.WSGIApplication([('/', MainPage),('/purge', Cleanup),('/view', Viewer),('/det/(.*)/(.*)/(.*)', DetailsExtractor ), ('/attj/(.*)/(.*)', JAttendance), ('/captchasub/(.*)/(.*)/(.*)', CaptchaSub), ('/marks/(.*)/(.*)', Marks), ('/captcha/(.*)', CaptchaGen), ('/att/(.*)/(.*)', AttExtractor) ] ,debug=True)
+app = webapp2.WSGIApplication([('/', MainPage),('/purge', Cleanup), ('/status', Status),('/view', Viewer),('/det/(.*)/(.*)/(.*)', DetailsExtractor ), ('/attj/(.*)/(.*)', JAttendance), ('/captchasub/(.*)/(.*)/(.*)', CaptchaSub), ('/marks/(.*)/(.*)', Marks), ('/captcha/(.*)', CaptchaGen), ('/att/(.*)/(.*)', AttExtractor) ] ,debug=True)

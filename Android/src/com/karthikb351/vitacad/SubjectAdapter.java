@@ -46,26 +46,12 @@ public class SubjectAdapter extends ArrayAdapter {
 			       	TextView type = (TextView) view.findViewById(R.id.type);
 			       	type.setText(sub.type);
 			        TextView atten = (TextView) view.findViewById(R.id.atten);
-			       	String con,att;
+			       	int con,att;
 			       	con=sub.conducted;
 			       	att=sub.attended;
-			       	int a,c;
-			       	
-			       	try
-			       	{
-			       		c=Integer.parseInt(con);
-			       		a=Integer.parseInt(att);
-			       	}
-			       	catch(NumberFormatException exc)
-			       	{
-			       		exc.printStackTrace();
-			       		a=0;
-			       		c=0;
-			       	}
-			       	float per=getPer(a, c);
-			       	atten.setText(a+"/"+c+"\n"+per+"%");
+			       	float per=sub.percentage;
+			       	atten.setText(att+"/"+con+"\n"+per+"%");
 			       	ProgressBar pg= (ProgressBar) view.findViewById(R.id.progress);
-			       	
 			       	int color;
 			       	if(per<80&&per>=75)
 			       		color=Color.parseColor("#FF8300");//Amber
@@ -80,12 +66,12 @@ public class SubjectAdapter extends ArrayAdapter {
 			       	ClipDrawable progress = new ClipDrawable(pgDrawable, Gravity.LEFT, ClipDrawable.HORIZONTAL);
 			       	pg.setProgressDrawable(progress);
 			       	pg.setBackgroundDrawable(this.getContext().getResources().getDrawable(R.drawable.progress_green));
-					pg.setMax(c);
-			        pg.setProgress(a);
+					pg.setMax(con);
+			        pg.setProgress(att);
 			        pg.invalidate();
             return view;
       }
-      float getPer(int num, int div)
+     static float getPer(int num, int div)
   	{
   		return (float)((int)(((float)num/div)*1000))/10;
   	}
