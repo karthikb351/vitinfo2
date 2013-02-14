@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.karthikb351.vitinfo2dev"
-    android:versionCode="9"
-    android:versionName="beta.v1" >
+    android:versionCode="11"
+    android:versionName="release.v1.1" >
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="15"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -48,7 +48,6 @@
             android:screenOrientation="portrait">
             
         </activity>
-        
         <!-- Start of Crittercism.com Code -->
 			<activity android:name="com.crittercism.NotificationActivity"/>
 		<!-- End of Crittercism.com Code -->

@@ -3,10 +3,6 @@ package com.karthikb351.vitacad;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,18 +15,17 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.GridLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
-import com.karthikb351.vitinfo2dev.*;
+import com.karthikb351.vitinfo2dev.R;
 
 
 public class SubjectDetails extends SherlockActivity {
@@ -82,6 +77,7 @@ public class SubjectDetails extends SherlockActivity {
 		globe_makeup=0;
 		globe_bunk=0;
 		setContent();
+		MainActivity.mTracker.sendView("/MainActivity/SubjectDetails");
 		
 	}
 	
@@ -110,7 +106,7 @@ public class SubjectDetails extends SherlockActivity {
 				case R.id.atten_details_button:
 					View view = getLayoutInflater().inflate(R.layout.atten_details_popup, null);
 					ListView lv=(ListView)view.findViewById(R.id.atten_details_popup_listview);
-					lv.setEnabled(false);
+					lv.setEnabled(true);
 					List listAtt= new ArrayList();
 					for(int i=0;i<sub.attendance_length;i++)
 						listAtt.add(sub.attendance[i]);
@@ -162,7 +158,10 @@ public class SubjectDetails extends SherlockActivity {
 		int t_atten=atten+globe_makeup,t_max=max+globe_makeup+globe_bunk;
 		float per=getPer(t_atten, t_max);
 		tv_net_per.setText(String.valueOf(per)+"%");
-		tv_net_per.setTextColor(getColor(t_atten, t_max));
+		if(t_max!=0)
+			tv_net_per.setTextColor(getColor(t_atten, t_max));
+		else
+			tv_net_per.setTextColor(bunk_val.getTextColors().getDefaultColor());
 		Log.i("color", String.valueOf(getColor(t_atten, t_max)));
 		Rect bounds = progBar.getProgressDrawable().getBounds();
 		if(per<80&&per>=75)
@@ -209,16 +208,18 @@ public class SubjectDetails extends SherlockActivity {
 		{
 			atten_popup.setOnClickListener(ocl);
 			atten_popup.setEnabled(true);
+			RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+			atten_updated_date.setLayoutParams(parms);
 			atten_updated_date.setText(sub.attendance[0].date);
 			atten_updated_status.setText(sub.attendance[0].status);
 			if(sub.attendance[0].status.equalsIgnoreCase("absent"))
 			{
-				atten_popup.setBackgroundColor(Color.parseColor("#FACACA"));
+				atten_updated_status.setTextColor(Color.parseColor("#FF0000"));
 			}
 		}
 		else
 		{
-			atten_updated_date.setText("Attendance not uploaded");
+			atten_updated_date.setText("Attendance Not Uploaded");
 		}
 	}
 	

@@ -13,7 +13,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,7 +22,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -85,7 +83,7 @@ public class MainActivity extends SherlockActivity {
 	SubmitCaptchaTask currentSCTask;
 	EditText captcha_edittext;
 	String captcha="";
-	void extrasInit()
+	void extrasInit(String reg, String uid)
 	{
 		try {
 			
@@ -108,21 +106,25 @@ public class MainActivity extends SherlockActivity {
 
     	//Crittercism.init(getApplicationContext(), "50e22966f71696783c000012", crittercismConfig);
     	
+    	
     	hs.install(MainActivity.this,
     			"91ff50eded9d62de7020a839c1e2292e",
     			"vitinfo-android.helpshift.com",
     			"vitinfo-android_platform_20130101001453620-203e6cbb7463f6f");
+
+    	Crittercism.setUsername(reg);
+    	hs.setDeviceIdentifier (uid);
+    	hs.setUsername (reg);
+    	mTracker.setCustomDimension(1, reg);
 	}
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	extrasInit();
+    	
     	settings = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
     	TelephonyManager tManager = (TelephonyManager)MainActivity.this.getSystemService(Context.TELEPHONY_SERVICE);
-    	String uid = tManager.getDeviceId();
-    	Crittercism.setUsername(settings.getString("regno", "USERNAME"));
-    	hs.setDeviceIdentifier (settings.getString("regno", uid));
-    	hs.setUsername (settings.getString("regno", "NEWUSER"));
+    	String uid = tManager.getDeviceId(), reg=settings.getString("regno", "USERNAME");
+    	extrasInit(reg, uid);
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.main);
     	mTracker.sendView("/MainActivity");
@@ -414,7 +416,11 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 	private class CheckStatusTask extends AsyncTask<Void, Void, String>
 	{
 		ProgressDialog pdia;
+		Time start,stop;
 		protected void onPreExecute() {
+			
+			start=new Time();
+			start.setToNow();
 			if(statusExplicit)
 			{
 			  	pdia = new ProgressDialog(MainActivity.this);
@@ -427,7 +433,7 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 		@Override
 		protected String doInBackground(Void... params) {
 			String res="";
-			String url = "http://vitacademicsdev.appspot.com/status";
+			String url = "http://vitacademicsrel.appspot.com/status";
 			try {
 				HttpClient client = new DefaultHttpClient();
 				HttpGet request = new HttpGet(url);
@@ -446,10 +452,13 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 		@Override
 		protected void onPostExecute(String result) {
 			
-			String status=" ", changelog=" ", appv=" ";
+			stop=new Time();
+			stop.setToNow();
+			String msg_content=" ",msg_no=null,msg_title=" ", changelog=" ", appv=" ";
 			boolean latest=true,error=false;
 			if(result.equals("error"))
 			{
+				mTracker.sendTiming("Timings", (stop.toMillis(true)-start.toMillis(true)), "Update Check", "error");
 				error=true;
 			}
 			if(pdia!=null)	
@@ -463,32 +472,25 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 					JSONObject j=new JSONObject(result);
 					appv=j.get("version").toString();
 					changelog=j.get("changelog").toString();
-					status=j.get("status_academics").toString();
+					msg_no=j.get("msg_no").toString();
+					msg_title=j.get("msg_title").toString();
+					msg_content=j.get("msg_content").toString();
 					if(Integer.parseInt(appv)>app_version)
 						latest=false;
 					} catch (JSONException e) {
-					status="academics.vit.ac.in seems to be down";
 					error=true;
 					e.printStackTrace();
 				}
 			if(!error)
 			{
+				mTracker.sendTiming("Timings", (stop.toMillis(true)-start.toMillis(true)), "Update Check", "valid");
 				if(isMainRunning)
 				{
-					if(latest)
-					{
-						AlertDialog.Builder build = new AlertDialog.Builder(MainActivity.this);
-						build.setTitle("Status Check");
-						build.setMessage("Status:"+status+"\nChange Log:"+changelog+"\nApp Version:"+"You are running the latest version");
-						build.setCancelable(true);
-						build.setPositiveButton("Okay", null);
-						build.create().show();
-					}
-					else
+					if(!latest)
 					{
 						AlertDialog.Builder build = new AlertDialog.Builder(MainActivity.this);
 						build.setTitle("Update Available");
-						build.setMessage("Please update to the latest version of the app");
+						build.setMessage("Please update to the latest version of the app.");
 						android.content.DialogInterface.OnClickListener ocl = new android.content.DialogInterface.OnClickListener() {
 							
 							@Override
@@ -536,13 +538,20 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 								
 							}
 						};
-						
-						
-						
-						build.setCancelable(true);
 						build.setPositiveButton("Update", ocl);
 						build.setNegativeButton("Cancel", ocl);
 						build.create().show();
+					}
+					DataHandler dat = new DataHandler(MainActivity.this);
+					if(dat.checkIfNewMsg(msg_no))
+					{
+						AlertDialog.Builder build = new AlertDialog.Builder(MainActivity.this);
+						build.setTitle(msg_title);
+						build.setMessage(msg_content);
+						build.setCancelable(false);
+						build.setPositiveButton("Okay", null);
+						build.create().show();
+						dat.saveMsg(msg_no, msg_content);
 					}
 				}
 			}
@@ -553,7 +562,10 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 	private class LoadAttendanceTask extends AsyncTask<ArrayList <String>, Void, String>
 	{
 		ProgressDialog pdia;
+		Time start, stop;
 		protected void onPreExecute() {
+			start=new Time();
+			start.setToNow();
 			attenCancelled=false;
 		  	pdia = new ProgressDialog(MainActivity.this);
 	        pdia.setMessage("Loading Attendance");
@@ -573,7 +585,7 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 		protected String doInBackground(ArrayList <String>... params) {
 			String res="";
 			ArrayList <String> details=params[0];
-			String url = "http://vitacademicsdev.appspot.com/attj/"+details.get(0)+"/"+details.get(1);
+			String url = "http://vitacademicsrel.appspot.com/attj/"+details.get(0)+"/"+details.get(1);
 			try {
 				HttpClient client = new DefaultHttpClient();
 				HttpGet request = new HttpGet(url);
@@ -592,6 +604,8 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 		@Override
 		protected void onPostExecute(String result) {
 			
+			stop=new Time();
+			stop.setToNow();
 			if(attenCancelled)
 			{
 				Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
@@ -599,19 +613,23 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 			}
 			else
 			{
+				
 				if(result.contains("timedout"))
 				{
 					Log.i("timedout",result);
+					mTracker.sendTiming("Timings", (stop.toMillis(true)-start.toMillis(true)), "Attendance", "timedout");
 					whoisnext="attendance";
 					startCaptcha();
 				}
 				else if(result.contains("valid"))
 				{
+					mTracker.sendTiming("Timings", (stop.toMillis(true)-start.toMillis(true)), "Attendance", "valid");
 					saveAttendance(result);
 					whoisnext=null;
 				}
 				else
 				{
+					mTracker.sendTiming("Timings", (stop.toMillis(true)-start.toMillis(true)), "Attendance", "error");
 					Log.e("error",result);
 					Toast.makeText(MainActivity.this, "Error fetching attendance", Toast.LENGTH_SHORT).show();
 				}
@@ -627,13 +645,14 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 	  ImageView bmImage;
 	  ProgressDialog pdia;
-	
+	  Time start, stop;
 	  public DownloadImageTask(ImageView bmImage) {
 	      this.bmImage = bmImage;
 	  }
 	
 	  protected void onPreExecute() {
-		
+		  	start=new Time();
+		  	start.setToNow();
 		  	pdia = new ProgressDialog(MainActivity.this);
 	        pdia.setMessage("Fetching Captcha");
 	        pdia.setCancelable(true);
@@ -650,7 +669,7 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 	        captchaLoadCancelled=false;
 	  }
 	  protected Bitmap doInBackground(String... urls) {
-	      String urldisplay = "http://vitacademicsdev.appspot.com/captcha/"+urls[0];
+	      String urldisplay = "http://vitacademicsrel.appspot.com/captcha/"+urls[0];
 	      Bitmap mIcon11 = null;
 	      try {
 	    	  HttpClient client = new DefaultHttpClient();
@@ -670,7 +689,8 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 	
 	
 	  protected void onPostExecute(Bitmap result) {
-		  
+		  stop=new Time();
+		  stop.setToNow();
 		  if(!captchaLoadCancelled)
 		  {
 			  Display display = getWindowManager().getDefaultDisplay();
@@ -682,13 +702,14 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 			  bmImage.setLayoutParams(parms);
 			  if(result==null)
 			  {
+				  mTracker.sendTiming("Timings", (stop.toMillis(true)-start.toMillis(true)), "Captcha Fetch", "error");
 				  Toast.makeText(MainActivity.this, "Error fetching Captcha. Try again.", Toast.LENGTH_SHORT).show();
 				  bmImage.setImageResource(R.drawable.ic_captcha_error);
 			  }
 			  else
 			  {
+				  mTracker.sendTiming("Timings", (stop.toMillis(true)-start.toMillis(true)), "Captcha Fetch", "valid");
 			      bmImage.setImageBitmap(result);
-			      Toast.makeText(MainActivity.this, "Got Captcha!", Toast.LENGTH_SHORT).show();
 			  }
 		  }
 		  else
@@ -705,9 +726,10 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 	private class SubmitCaptchaTask extends AsyncTask<ArrayList <String>, Void, String>
 	{
 		ProgressDialog pdia;
-		
+		Time start,stop;
 		protected void onPreExecute() {
-			
+			start=new Time();
+			start.setToNow();
 		  	pdia = new ProgressDialog(MainActivity.this);
 	        pdia.setMessage("Submitting Captcha");
 	        pdia.setCancelable(true);
@@ -726,7 +748,7 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 		protected String doInBackground(ArrayList <String>... params) {
 			String res="";
 			ArrayList <String> details=params[0];
-			String urldisplay = "http://vitacademicsdev.appspot.com/captchasub/"+details.get(0)+"/"+details.get(1)+"/"+details.get(2);
+			String urldisplay = "http://vitacademicsrel.appspot.com/captchasub/"+details.get(0)+"/"+details.get(1)+"/"+details.get(2);
 			try {
 				HttpClient client = new DefaultHttpClient();
 				HttpGet request = new HttpGet(urldisplay);
@@ -746,10 +768,13 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 		
 		protected void onPostExecute(String result)
 		{
+			stop=new Time();
+			stop.setToNow();
 			boolean restart=false;
 			boolean attendance=false;
 			if(result.equals("error"))
 			{
+				mTracker.sendTiming("Timings", (stop.toMillis(true)-start.toMillis(true)), "Captcha Submit", "error");
 				Toast.makeText(MainActivity.this,"Error submitting captcha",Toast.LENGTH_SHORT).show();
 			}
 			else if(result.contains("timedout"))
@@ -762,9 +787,14 @@ android.content.DialogInterface.OnClickListener diagocl = new android.content.Di
 			}
 			else if(result.contains("success"))
 			{
+				mTracker.sendTiming("Timings", (stop.toMillis(true)-start.toMillis(true)), "Captcha Submit", "valid");
 				if(whoisnext!=null)
 					if(whoisnext.equals("attendance"))
 						attendance=true;
+			}
+			else
+			{
+				Toast.makeText(MainActivity.this,"Oops. Something went wrong. Maybe your credentials are incorrect?",Toast.LENGTH_SHORT).show();
 			}
 			if(pdia.isShowing())
 				pdia.dismiss();

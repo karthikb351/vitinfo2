@@ -11,23 +11,16 @@ import urllib
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        self.response.out.write('<h1>VITacademics Scraping Engine [DEVELOPMENT SERVER]</h1> <h2>Running On Google App Engine.</h2> \n<h4>Last Update: 4th February 2013 </h4><h4>\n\n(c) 2013 CollegeCODE</h4>')
+        self.response.out.write('<h1>VITacademics Scraping Engine</h1> <h2>Running On Google App Engine.</h2> \n<h4>Last Update: 13th February 2013 </h4><h4>\n\n(c) 2013 CollegeCODE</h4>')
 
 class Status(webapp2.RequestHandler):
 	def get(self):
                 sub={}
-                sub.update({'version':'10'})
-                sub.update({'changelog':'New look and stuff'})
-                def create_callback(rpc):
-                    return lambda: handle_result(rpc)
-                def handle_result(rpc):
-                    result = rpc.get_result()
-                    status=None
-                rpc = urlfetch.create_rpc()
-                rpc.callback = create_callback(rpc)
-                urlfetch.make_fetch_call(rpc, "https://academics.vit.ac.in/parent/parent_login.asp")
-                rpc.wait()
-                sub.update({'status_academics':'Everything seems to be running fine'})
+                sub.update({'version':'11'})
+                sub.update({'changelog':'Nothing here yet'})
+                sub.update({'msg_no':'2'})
+                sub.update({'msg_title':'...and We\'re back!'})
+                sub.update({'msg_content':'We apologise for the long absence. We underestimated the load on our servers. We have rebuilt the system to try and handle a larger number of users more efficiently. Since we are fetching all the attendance details in one go, it might take a little while longer to fetch your attendance. This is a limitation on VIT\'s part. Not us :P'})
                 self.response.write(json.dumps(sub))
 class DetailsExtractor(webapp2.RequestHandler):
 	def get(self, regno, dob, subject):
@@ -335,9 +328,20 @@ class JAttendance(webapp2.RequestHandler):
                                         lastArray = []
                                         for i in range(19, len(last), 2):
                                             lastArray.append(str(last[i].text))
-                                        lastArrayNew = filter (lambda a: a != "-", lastArray)
+                                        c=0
+                                        result=[]
+                                        count=0
+                                        for i in lastArray:
+                                            if(c==2):
+                                                c=0
+                                                if(i!="-"):
+                                                    result[count-1]+="("+i+")"
+                                            else:
+                                                result.append(i)
+                                                c=c+1
+                                                count=count+1
                                         sub=iterator.next()
-                                        sub.update({'details':lastArrayNew})
+                                        sub.update({'details':result})
                                     for sub in subs:
                                         clsnbr=sub['classnbr']
                                         rpc = urlfetch.create_rpc()
@@ -364,6 +368,7 @@ class Cleanup(webapp2.RequestHandler):
 		msg="<h2>Purged the following bogus users</h2>"
 		msg+="<ul>"
 		c=0
+		a=0
 		for a in q:
 			if(a.valid==0):
 				db.delete(a.key())
@@ -371,37 +376,45 @@ class Cleanup(webapp2.RequestHandler):
 				msg=msg+a.key().name()
 				msg=msg+"</h3></pre>"
 				c=c+1
+			a=a+1
 		msg=msg+"</ul>"
+		msg=msg+"<h2>Total unique users: "+str(a-c)+"</h2>"
 		if(c==0):
 			self.response.write("<h3>Nothing to purge today!</h3>")
 		else:	
 			self.response.write(msg)
-			message = mail.EmailMessage(sender="VITacademics Purger <karthikb351@gmail.com>",subject="The following bogus users have been purged")
+			message = mail.EmailMessage(sender="VITacademicsrel Update<karthikb351@gmail.com>",subject="Today's Stats")
 			message.to = "Karthik Balakrishnan <karthikb351@gmail.com>"
 			message.html=msg
 			message.send()
 
 class Viewer(webapp2.RequestHandler):
-	def get(self):
-		q = User.all()
-		q.order('-tot_count')
-		self.response.write("<ul>")
-		for x in q:
-			self.response.write("<pre><li><h3>USER:")
-			self.response.write(x.key().name())
-			self.response.write("\nDOB:")
-			self.response.write(x.dob)
-			self.response.write("</h3><h4>Total Number of requests:\t")
-			self.response.write(x.tot_count)
-			self.response.write("</h4>Captcha Sub Count:\t\t")
-			self.response.write(x.cap_count)
-			self.response.write("\nAttendance Count:\t\t")
-			self.response.write(x.att_count)
-			self.response.write("\nMarks Count:\t\t\t")
-			self.response.write(x.mark_count)
-			self.response.write("</li>")
-			self.response.write("\n\n</pre>")
-		self.response.write("</ul>")
+	def get(self, pwd):
+            if(pwd=="thatthingweshouldntbedoing"):
+                    q = User.all()
+                    q.order('-tot_count')
+                    self.response.write("<ul>")
+                    count=0
+                    for x in q:
+                            if(count==5):
+                                break;
+                            self.response.write("<pre><li><h3>USER:")
+                            self.response.write(x.key().name())
+                            self.response.write("\nDOB:")
+                            self.response.write(x.dob)
+                            self.response.write("</h3><h4>Total Number of requests:\t")
+                            self.response.write(x.tot_count)
+                            self.response.write("</h4>Captcha Sub Count:\t\t")
+                            self.response.write(x.cap_count)
+                            self.response.write("\nAttendance Count:\t\t")
+                            self.response.write(x.att_count)
+                            self.response.write("\nMarks Count:\t\t\t")
+                            self.response.write(x.mark_count)
+                            self.response.write("</li>")
+                            self.response.write("\n\n</pre>")
+                    self.response.write("</ul>")
+            else:
+                self.response.write("This URL does nothing. Now go away.")
 			
 			
 		
@@ -419,4 +432,4 @@ class User(db.Model):
 
 
 
-app = webapp2.WSGIApplication([('/', MainPage),('/purge', Cleanup), ('/status', Status),('/view', Viewer),('/det/(.*)/(.*)/(.*)', DetailsExtractor ), ('/attj/(.*)/(.*)', JAttendance), ('/captchasub/(.*)/(.*)/(.*)', CaptchaSub), ('/marks/(.*)/(.*)', Marks), ('/captcha/(.*)', CaptchaGen), ('/att/(.*)/(.*)', AttExtractor) ] ,debug=True)
+app = webapp2.WSGIApplication([('/', MainPage),('/purge', Cleanup), ('/status', Status),('/view/(.*)', Viewer),('/det/(.*)/(.*)/(.*)', DetailsExtractor ), ('/attj/(.*)/(.*)', JAttendance), ('/captchasub/(.*)/(.*)/(.*)', CaptchaSub), ('/marks/(.*)/(.*)', Marks), ('/captcha/(.*)', CaptchaGen), ('/att/(.*)/(.*)', AttExtractor) ] ,debug=True)

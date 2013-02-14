@@ -19,7 +19,8 @@
             android:padding="5dp"
             android:paddingLeft="0dp"
             android:layout_marginBottom="5dp"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:text="Really Long Title" />
 
         <TextView
             android:id="@+id/atten"
@@ -39,23 +40,42 @@
             android:layout_below="@id/title" />
 
         <TextView
+            android:id="@+id/atten_listitem_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/progress"
+            android:layout_alignParentLeft="true"
+            android:padding="5dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Date" />
+        <TextView
+            android:id="@+id/atten_listitem_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/progress"
+            android:layout_alignParentRight="true"
+            android:padding="5dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Status" />
+        <TextView
             android:id="@+id/type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/progress"
+            android:layout_below="@id/atten_listitem_date"
             android:layout_alignParentLeft="true"
-            android:padding="5dp"
-            android:textSize="11dp"
-            android:text="" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:paddingLeft="5dp"
+            android:text="Type" />
+        
         <TextView
             android:id="@+id/slot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/progress"
+            android:layout_below="@id/atten_listitem_status"
             android:layout_alignParentRight="true"
-            android:padding="5dp"
-            android:textSize="11dp"
-            android:text="" />
+			android:textAppearance="?android:attr/textAppearanceSmall"
+            android:paddingRight="5dp"
+            android:text=" Slot" />
         <ImageView
             android:src="?android:attr/listDivider" 
             android:layout_height="2dp"

@@ -14,7 +14,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
+
 import com.karthikb351.vitinfo2dev.R;
 
 public class SubjectAdapter extends ArrayAdapter {
@@ -46,6 +48,24 @@ public class SubjectAdapter extends ArrayAdapter {
 			       	TextView type = (TextView) view.findViewById(R.id.type);
 			       	type.setText(sub.type);
 			        TextView atten = (TextView) view.findViewById(R.id.atten);
+			       	TextView status = (TextView) view.findViewById(R.id.atten_listitem_status);
+			        TextView date = (TextView) view.findViewById(R.id.atten_listitem_date);
+			        type.setTextColor(Color.parseColor("#999999"));
+			        slot.setTextColor(Color.parseColor("#999999"));
+			        if(sub.att_valid)
+			        {
+			        	date.setText("As of: "+sub.atten_last_date);
+			        	status.setText(sub.atten_last_status);
+			        	if(sub.atten_last_status.equalsIgnoreCase("absent"))
+			        	{
+			        		status.setTextColor(Color.parseColor("#FF0000"));
+			        	}
+			        }
+			        else
+			        {
+			        	status.setText(" ");
+			        	date.setText("Attendance Not Uploaded");
+			        }
 			       	int con,att;
 			       	con=sub.conducted;
 			       	att=sub.attended;

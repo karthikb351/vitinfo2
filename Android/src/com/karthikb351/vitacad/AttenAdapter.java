@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.karthikb351.vitinfo2dev.R;
 
 public class AttenAdapter extends ArrayAdapter {
@@ -45,7 +46,7 @@ public class AttenAdapter extends ArrayAdapter {
 			       	TextView status = (TextView) view.findViewById(R.id.atten_detail_status);
 			       	status.setText(s);
 			       	if(s.equals("Absent"))
-			       		view.setBackgroundColor(Color.parseColor("#FACACA"));
+			       		status.setTextColor(Color.parseColor("#FF0000"));
             return view;
       }
 }

@@ -68,7 +68,6 @@ public class DataHandler {
 			sub.conducted=Integer.parseInt(str.get(breaker+5));
 		}
 		catch (Exception e){
-			e.printStackTrace();
 			sub.attended=0;
 			sub.conducted=0;
 		}
@@ -122,6 +121,21 @@ public class DataHandler {
 		}
 	}
 	
+	
+	public void saveMsg(String key, String msg)
+	{
+		Editor edit = preferences.edit();
+		edit.putString("MSG_"+key, msg);
+		edit.commit();
+	}
+	
+	boolean checkIfNewMsg(String key)
+	{
+		if(preferences.getString("MSG_"+key, null)==null)
+			return true;
+		else
+			return false;
+	}
 	public void saveList(String key , ArrayList<String> list){
 		Editor edit = preferences.edit();
 		
