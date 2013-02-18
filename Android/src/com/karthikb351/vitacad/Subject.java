@@ -2,15 +2,10 @@ package com.karthikb351.vitacad;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.text.format.DateFormat;
 import android.util.Log;
 
 

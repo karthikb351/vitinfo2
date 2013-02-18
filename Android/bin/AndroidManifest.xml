@@ -20,7 +20,6 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -42,12 +41,27 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Sherlock.Light.NoActionBar">
         </activity>
+        
+        <receiver android:exported="false" android:name="com.karthikb351.vitacad.ProviderWidget" >
+            <intent-filter >
+                <action 
+                    android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+        
         <activity
             android:name="com.karthikb351.vitacad.SubjectDetails"
             android:label="Subject Details"
             android:screenOrientation="portrait">
             
         </activity>
+        
+         <service android:name="com.karthikb351.vitacad.UpdateWidget"></service> 
+        
         <!-- Start of Crittercism.com Code -->
 			<activity android:name="com.crittercism.NotificationActivity"/>
 		<!-- End of Crittercism.com Code -->

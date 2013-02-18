@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="4dip"
+    android:background="@drawable/w_back" >
+
+    <TextView
+        android:id="@+id/lbl_wid_sub"
+        style="@android:style/TextAppearance.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_margin="4dip"
+        android:textColor="#000001"
+         >
+    </TextView>
+   <ProgressBar
+        android:id="@+id/prg_wid_per"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_below =  "@id/lbl_wid_sub"
+        android:layout_margin="4dip"
+         >
+    </ProgressBar>
+    
+    <TextView
+        android:id="@+id/lbl_wid_slt"
+        style="@android:style/TextAppearance.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_below =  "@id/prg_wid_per"
+        android:layout_margin="4dip"
+        android:text="SLOT"
+        android:textColor="#000001"
+         >
+         
+    </TextView>
+    
+     <ImageButton 
+         android:id="@+id/img_wid_nxt"
+         android:layout_width="32dp" 
+         android:layout_height="32dp"
+         android:layout_alignParentRight="true"
+         android:layout_alignParentBottom="true"
+         android:background="@drawable/forward_w" />
+     
+      <ImageButton 
+         android:id="@+id/img_wid_bck"
+         android:layout_width="32dp" 
+         android:layout_height="32dp"
+         android:layout_alignParentLeft="true"
+         android:layout_alignParentBottom="true"
+         android:background="@drawable/back_w" />
+
+    </RelativeLayout> 

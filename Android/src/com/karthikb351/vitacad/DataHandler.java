@@ -2,7 +2,7 @@ package com.karthikb351.vitacad;
 
 /*
  * COMMON DATA HANDLER FOR THE APP  
- * AUTHOR: SAURABH JOSHI
+ * AUTHOR: SAURABH JOSHI & KARTHIK BALAKRISHNAN
  * USAGE:
  * 1)To save attendance:
  *  DataHandler dat = new DataHandler(getApplicationContext());
