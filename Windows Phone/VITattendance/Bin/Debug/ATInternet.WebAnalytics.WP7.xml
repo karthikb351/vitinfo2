@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ATInternet.WebAnalytics.WP7</name>
+    </assembly>
+    <members>
+        <member name="T:ATInternet.WebAnalytics.ATInternetAnalytics">
+            <summary>
+            Analytics Service for Contoso Analytics (a Ficticous Web Analytics Service)
+            </summary>
+            <remarks>This is a sample vendor component for the Silverlight Analytics Framework</remarks>
+        </member>
+        <member name="F:ATInternet.WebAnalytics.ATInternetAnalytics.CookieName">
+            <summary>
+            The Cookie Name
+            </summary>
+        </member>
+        <member name="M:ATInternet.WebAnalytics.ATInternetAnalytics.OnAttached">
+            <summary>
+            Initialize the imported parts and attache the TrackEvent handler
+            </summary>
+        </member>
+        <member name="M:ATInternet.WebAnalytics.ATInternetAnalytics.OnDetaching">
+            <summary>
+            Detach the TrackEvent() handler
+            </summary>
+        </member>
+        <member name="M:ATInternet.WebAnalytics.ATInternetAnalytics.OnTrackEvent(System.Object,Microsoft.WebAnalytics.AnalyticsEventArgs)">
+            <summary>
+            Track the event to the service
+            </summary>
+            <param name="sender">the event tracker</param>
+            <param name="e">the anlalytics event arguments</param>
+        </member>
+        <member name="P:ATInternet.WebAnalytics.ATInternetAnalytics.xtsite">
+            <summary>
+            Gets or sets the AT Internet xtsite parameter
+            </summary>
+        </member>
+        <member name="P:ATInternet.WebAnalytics.ATInternetAnalytics.xtsd">
+            <summary>
+            Gets or sets the AT Internet xtsd parameter
+            </summary>
+        </member>
+        <member name="P:ATInternet.WebAnalytics.ATInternetAnalytics.Events">
+            <summary>
+            Gets or sets the web analytics events
+            </summary>
+        </member>
+        <member name="P:ATInternet.WebAnalytics.ATInternetAnalytics.Dispatch">
+            <summary>
+            Gets or sets the web message dispatcher
+            </summary>
+        </member>
+    </members>
+</doc>

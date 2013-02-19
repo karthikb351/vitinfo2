@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Webtrends.WebAnalytics</name>
+    </assembly>
+    <members>
+        <member name="T:Webtrends.WebAnalytics.DateTimeOffsetExtensions">
+            <summary>
+            DateTimeOffset extension methods
+            </summary>
+        </member>
+        <member name="M:Webtrends.WebAnalytics.DateTimeOffsetExtensions.ToUnixTimestamp(System.DateTimeOffset)">
+            <summary>
+            Generate a UNIX timestamp (number of milliseconds since 1/1/1970)
+            </summary>
+            <param name="dateTime">a date to convert</param>
+            <returns>a timestamp in seconds since January 1, 1970</returns>
+        </member>
+        <member name="T:Webtrends.WebAnalytics.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Webtrends.WebAnalytics.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Webtrends.WebAnalytics.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Webtrends.WebAnalytics.Properties.Resources.ApiVersion">
+            <summary>
+              Looks up a localized string similar to 1.
+            </summary>
+        </member>
+        <member name="T:Webtrends.WebAnalytics.WebtrendsAnalytics">
+            <summary>
+            Webtrends Data Collection
+            </summary>
+            <remarks>http://product.webtrends.com/dcapi/index.html</remarks>
+        </member>
+        <member name="F:Webtrends.WebAnalytics.WebtrendsAnalytics.VisitorIdKey">
+            <summary>
+            The Isolated storage key
+            </summary>
+        </member>
+        <member name="M:Webtrends.WebAnalytics.WebtrendsAnalytics.#ctor">
+            <summary>
+            Initializes a new instance of the WebtrendsAnalytics class.
+            </summary>
+        </member>
+        <member name="M:Webtrends.WebAnalytics.WebtrendsAnalytics.OnAttached">
+            <summary>
+            Attach the TrackEvent handler and get the visitor Id
+            </summary>
+        </member>
+        <member name="M:Webtrends.WebAnalytics.WebtrendsAnalytics.OnDetaching">
+            <summary>
+            Detach the TrackEvent handler
+            </summary>
+        </member>
+        <member name="M:Webtrends.WebAnalytics.WebtrendsAnalytics.Append(System.Text.StringBuilder,System.Collections.Generic.IEnumerable{Microsoft.WebAnalytics.Data.PropertyValue})">
+            <summary>
+            Append the items to the string as query parameters
+            </summary>
+            <param name="builder">the string builder</param>
+            <param name="items">a property value</param>
+        </member>
+        <member name="M:Webtrends.WebAnalytics.WebtrendsAnalytics.TraceException(System.Net.WebException)">
+            <summary>
+            Trace a web exception to the debugger
+            </summary>
+            <param name="we">the web execption</param>
+        </member>
+        <member name="M:Webtrends.WebAnalytics.WebtrendsAnalytics.GetVisitorId">
+            <summary>
+            Gets the Visitor Id
+            </summary>
+        </member>
+        <member name="M:Webtrends.WebAnalytics.WebtrendsAnalytics.OnPostedVisitorId(System.Object,System.Net.UploadStringCompletedEventArgs)">
+            <summary>
+            POST to request the Visitor Id has returned
+            </summary>
+            <param name="sender">the WebClient</param>
+            <param name="e">the upload string completed event arguments</param>
+        </member>
+        <member name="M:Webtrends.WebAnalytics.WebtrendsAnalytics.EventDispatcher_TrackEvent(System.Object,Microsoft.WebAnalytics.AnalyticsEventArgs)">
+            <summary>
+            Track an event using Webtrends data collection API
+            </summary>
+            <remarks>http://developer.webtrends.com//docs/DOC-1151#cf</remarks>
+            <param name="sender">the event dispatcher</param>
+            <param name="e">an analytics event argument</param>
+        </member>
+        <member name="M:Webtrends.WebAnalytics.WebtrendsAnalytics.PostEventData(Microsoft.WebAnalytics.AnalyticsEvent)">
+            <summary>
+            Post the event data to Webtrends
+            </summary>
+            <param name="analyticsEvent">an analytics event</param>
+        </member>
+        <member name="M:Webtrends.WebAnalytics.WebtrendsAnalytics.OnEventRequestStream(System.IAsyncResult)">
+            <summary>
+            fill the HTTP POST content
+            </summary>
+            <param name="result">the async result</param>
+        </member>
+        <member name="M:Webtrends.WebAnalytics.WebtrendsAnalytics.GenerateParameters(Microsoft.WebAnalytics.AnalyticsEvent)">
+            <summary>
+            Generate the parameters for the Log Event
+            </summary>
+            <param name="logEvent">the event to log</param>
+            <returns>the paramter string</returns>
+        </member>
+        <member name="M:Webtrends.WebAnalytics.WebtrendsAnalytics.OnEventPosted(System.IAsyncResult)">
+            <summary>
+            An event has been posted
+            </summary>
+            <param name="result">the async result</param>
+        </member>
+        <member name="P:Webtrends.WebAnalytics.WebtrendsAnalytics.Events">
+            <summary>
+            Gets or sets the Web Analytics events
+            </summary>
+        </member>
+        <member name="P:Webtrends.WebAnalytics.WebtrendsAnalytics.ApiVersion">
+            <summary>
+            Gets or sets the API Version
+            </summary>
+        </member>
+        <member name="P:Webtrends.WebAnalytics.WebtrendsAnalytics.DataSourceId">
+            <summary>
+            Gets or sets the data source Id
+            </summary>
+        </member>
+        <member name="P:Webtrends.WebAnalytics.WebtrendsAnalytics.ContentGroup">
+            <summary>
+            Gets or sets the content group
+            </summary>
+        </member>
+        <member name="P:Webtrends.WebAnalytics.WebtrendsAnalytics.CustomParameters">
+            <summary>
+            Gets or sets application-specific data
+            </summary>
+        </member>
+        <member name="P:Webtrends.WebAnalytics.WebtrendsAnalytics.Verbose">
+            <summary>
+            Gets or sets a value indicating whether to use verbose error messages
+            </summary>
+            <remarks>in DEBUG builds, this is true by default, in RELEASE builds, it is false by default</remarks>
+        </member>
+        <member name="P:Webtrends.WebAnalytics.WebtrendsAnalytics.VisitorId">
+            <summary>
+            Gets or sets the visitor Id
+            </summary>
+        </member>
+        <member name="T:Webtrends.WebAnalytics.Data.PostData">
+            <summary>
+            Post Data for analytics event
+            </summary>
+        </member>
+        <member name="P:Webtrends.WebAnalytics.Data.PostData.Request">
+            <summary>
+            Gets or sets the HTTP web request
+            </summary>
+        </member>
+        <member name="P:Webtrends.WebAnalytics.Data.PostData.Event">
+            <summary>
+            Gets or sets the analytics event
+            </summary>
+        </member>
+    </members>
+</doc>

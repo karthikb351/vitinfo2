@@ -1,0 +1,27 @@
+﻿<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="VITattendance" EntryPointType="VITattendance.App" RuntimeVersion="4.7.50308.0">
+  <Deployment.Parts>
+    <AssemblyPart x:Name="VITattendance" Source="VITattendance.dll" />
+    <AssemblyPart x:Name="ATInternet.WebAnalytics.WP7" Source="ATInternet.WebAnalytics.WP7.dll" />
+    <AssemblyPart x:Name="Coding4Fun.Phone.Audio" Source="Coding4Fun.Phone.Audio.dll" />
+    <AssemblyPart x:Name="Coding4Fun.Phone.Controls" Source="Coding4Fun.Phone.Controls.dll" />
+    <AssemblyPart x:Name="Coding4Fun.Phone.Controls.Toolkit" Source="Coding4Fun.Phone.Controls.Toolkit.dll" />
+    <AssemblyPart x:Name="Coding4Fun.Phone.Net" Source="Coding4Fun.Phone.Net.dll" />
+    <AssemblyPart x:Name="Coding4Fun.Phone.Storage" Source="Coding4Fun.Phone.Storage.dll" />
+    <AssemblyPart x:Name="Google.WebAnalytics" Source="Google.WebAnalytics.dll" />
+    <AssemblyPart x:Name="MC.Phone.Analytics" Source="MC.Phone.Analytics.dll" />
+    <AssemblyPart x:Name="Microsoft.Advertising.Mobile" Source="Microsoft.Advertising.Mobile.dll" />
+    <AssemblyPart x:Name="Microsoft.Advertising.Mobile.UI" Source="Microsoft.Advertising.Mobile.UI.dll" />
+    <AssemblyPart x:Name="Microsoft.Phone.Controls" Source="Microsoft.Phone.Controls.dll" />
+    <AssemblyPart x:Name="Microsoft.Phone.Controls.Toolkit" Source="Microsoft.Phone.Controls.Toolkit.dll" />
+    <AssemblyPart x:Name="Microsoft.WebAnalytics.Behaviors" Source="Microsoft.WebAnalytics.Behaviors.dll" />
+    <AssemblyPart x:Name="Microsoft.WebAnalytics" Source="Microsoft.WebAnalytics.dll" />
+    <AssemblyPart x:Name="Nedstat" Source="Nedstat.dll" />
+    <AssemblyPart x:Name="Nedstat.MSAF" Source="Nedstat.MSAF.dll" />
+    <AssemblyPart x:Name="Newtonsoft.Json" Source="Newtonsoft.Json.dll" />
+    <AssemblyPart x:Name="System.ComponentModel.Composition" Source="System.ComponentModel.Composition.dll" />
+    <AssemblyPart x:Name="System.ComponentModel.Composition.Initialization" Source="System.ComponentModel.Composition.Initialization.dll" />
+    <AssemblyPart x:Name="System.Windows.Interactivity" Source="System.Windows.Interactivity.dll" />
+    <AssemblyPart x:Name="WebAnalysisDotNet.WebAnalytics.WP7" Source="WebAnalysisDotNet.WebAnalytics.WP7.dll" />
+    <AssemblyPart x:Name="Webtrends.WebAnalytics" Source="Webtrends.WebAnalytics.dll" />
+  </Deployment.Parts>
+</Deployment>

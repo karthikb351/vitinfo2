@@ -1,0 +1,69 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="VITattendance.subjectDetails"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="800"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait"  Orientation="Portrait"
+    shell:SystemTray.IsVisible="False">
+
+    <!--LayoutRoot contains the root grid where all other page content is placed-->
+    <Grid x:Name="LayoutRoot">
+        <controls:Panorama Title="my application" Name="controller">
+            <controls:Panorama.Background>
+                <ImageBrush ImageSource="PanoramaBackground.png"/>
+            </controls:Panorama.Background>
+            <!--Panorama item one-->
+            <controls:PanoramaItem Header="Attendance">
+                <Grid Width="432">
+                    <TextBlock Name="lbl_percent" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" Text="87.6%" Padding="0,0,0,30" FontSize="110" TextWrapping="Wrap"  Style="{StaticResource PhoneTextExtraLargeStyle}" Margin="48,-1,28,0" Width="356" />
+                    <Button Content="-" Height="72" HorizontalAlignment="Left" Name="button1" VerticalAlignment="Bottom" Width="96" Click="button1_Click" Margin="0,0,0,187" />
+                    <Button Content="+" Height="72" HorizontalAlignment="Right" Margin="0,0,1,183" Name="button2" VerticalAlignment="Bottom" Width="96" Click="button2_Click" />
+                    <TextBlock TextAlignment="Center" Height="30" HorizontalAlignment="Center" Margin="85,262,82,0" Name="textBlock1" Text="If you miss 0 class" VerticalAlignment="Top" Width="253" />
+                    <Button Content="-" Height="72" HorizontalAlignment="Left" Margin="1,0,0,112" Name="button3" VerticalAlignment="Bottom" Width="96" Click="button3_Click" />
+                    <Button Content="+" Height="72" HorizontalAlignment="Right" Margin="0,0,0,108" Name="button4" VerticalAlignment="Bottom" Width="96" Click="button4_Click" />
+                    <TextBlock Height="30" HorizontalAlignment="Left" Margin="86,336,0,0" Name="textBlock2" Text="If you attend 0 class" TextAlignment="Center" VerticalAlignment="Top" Width="253" />
+                </Grid>
+            </controls:PanoramaItem>
+
+            <!--Panorama item two-->
+            <controls:PanoramaItem Header="Details">
+                <ListBox Margin="0,0,-12,0" Name="details">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Width="432">
+                                <TextBlock VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding Subject}" TextWrapping="Wrap"  Style="{StaticResource PhoneTextExtraLargeStyle}"/>
+                                <TextBlock VerticalAlignment="Bottom" Padding="50,50,50,50" HorizontalAlignment="Right"  Text="{Binding Slot}" TextWrapping="Wrap" FontSize="65"  Style="{StaticResource PhoneTextSubtleStyle}"/>
+                                
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </controls:PanoramaItem>
+
+            <controls:PanoramaItem Header="More Details">
+                <ListBox Margin="0,0,-12,0" Name="moreDetais">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Width="432">
+                                <TextBlock VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding Subject}" TextWrapping="Wrap"  Style="{StaticResource PhoneTextExtraLargeStyle}"/>
+                                <TextBlock VerticalAlignment="Bottom" Padding="50,50,50,50" HorizontalAlignment="Right"  Text="{Binding Slot}" TextWrapping="Wrap" FontSize="65"  Style="{StaticResource PhoneTextSubtleStyle}"/>
+
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </controls:PanoramaItem>
+        </controls:Panorama>
+    </Grid>
+
+    <!--Panorama-based applications should not show an ApplicationBar-->
+
+</phone:PhoneApplicationPage>

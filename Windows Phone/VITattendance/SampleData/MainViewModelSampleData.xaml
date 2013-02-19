@@ -1,0 +1,12 @@
+﻿<local:MainViewModel 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"       
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:VITattendance" 
+    SampleProperty="Sample Text Property Value">
+    
+    <local:MainViewModel.Items>
+        <local:ItemViewModel LineOne="dsd" LineTwo="L1+T1" LineThree="87%"/>
+        
+    </local:MainViewModel.Items>
+    
+</local:MainViewModel>
