@@ -89,7 +89,6 @@ public class UpdateWidget extends Service {
 			  
 			  PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, clickIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 			  PendingIntent pendingIntent2 = PendingIntent.getBroadcast(getApplicationContext(), 1, clickIntent2,PendingIntent.FLAG_UPDATE_CURRENT);
-			       
 			  remoteViews.setOnClickPendingIntent(R.id.img_wid_nxt , pendingIntent);
 			  remoteViews.setOnClickPendingIntent(R.id.img_wid_bck , pendingIntent2);
 			  
