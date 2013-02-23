@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="5dp"
+    android:id="@+id/loginDetails">
+
+   	<TextView
+        android:id="@+id/diagMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
+        android:text="Enter Reg. No and Date of birth" />
+   	
+    <EditText
+        android:id="@+id/diagRegno"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/diagMsg"
+        android:ems="10"
+        android:hint="Eg.11BCE0354"
+        android:inputType="textCapCharacters"
+        android:maxLength="12" >
+
+        <requestFocus />
+    </EditText>
+
+    <DatePicker
+        android:id="@+id/datePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/diagRegno"
+        android:layout_centerHorizontal="true"
+        android:calendarViewShown="false"
+        android:layout_margin="5dp"
+        android:keepScreenOn="true"
+        android:endYear="2015"/>
+
+ 
+
+</RelativeLayout>

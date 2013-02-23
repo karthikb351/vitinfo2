@@ -66,7 +66,6 @@ public class Subject {
 	}
 	String getDay(String date)
 	{
-		Log.i("Coverting", date);
 		String dd=date.substring(0, date.indexOf('-')),mm=date.substring(date.indexOf('-')+1, date.lastIndexOf('-')),yy=date.substring(date.lastIndexOf('-')+1, date.length()-1);
 		String pattern="dd-MMM-yyyy", newPattern="EEEE, dd-MMM", result="Error";
 		SimpleDateFormat df= new SimpleDateFormat(pattern);
