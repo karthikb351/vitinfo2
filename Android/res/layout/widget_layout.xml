@@ -2,62 +2,80 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="4dip"
-    android:background="@drawable/w_back" >
+    android:layout_height="40dp"
+    android:background="@drawable/appwidget_bg"
+    android:layout_margin="3dp">
+<LinearLayout
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent"
+          android:orientation="horizontal" 
+          android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/lbl_wid_sub"
-        style="@android:style/TextAppearance.Small"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:gravity="center_horizontal|center_vertical"
-        android:layout_margin="4dip"
-        android:textColor="#000001"
-         >
-    </TextView>
-   <ProgressBar
-        android:id="@+id/prg_wid_per"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:gravity="center_horizontal|center_vertical"
-        android:layout_below =  "@id/lbl_wid_sub"
-        android:layout_margin="4dip"
-         >
-    </ProgressBar>
-    
-    <TextView
-        android:id="@+id/lbl_wid_slt"
-        style="@android:style/TextAppearance.Small"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:gravity="center_horizontal|center_vertical"
-        android:layout_below =  "@id/prg_wid_per"
-        android:layout_margin="4dip"
-        android:text="SLOT"
-        android:textColor="#000001"
-         >
-         
-    </TextView>
-    
-     <ImageButton 
-         android:id="@+id/img_wid_nxt"
-         android:layout_width="32dp" 
-         android:layout_height="32dp"
-         android:layout_alignParentRight="true"
-         android:layout_alignParentBottom="true"
-         android:background="@drawable/forward_w" />
-     
-      <ImageButton 
-         android:id="@+id/img_wid_bck"
-         android:layout_width="32dp" 
-         android:layout_height="32dp"
-         android:layout_alignParentLeft="true"
-         android:layout_alignParentBottom="true"
-         android:background="@drawable/back_w" />
+		      <RelativeLayout 
+		          android:layout_width="25dp"
+		          android:layout_height="wrap_content"
+		          android:layout_weight="1"
+		          >
+				      <ImageButton 
+					         android:id="@+id/img_wid_bck"
+					         android:layout_width="25dp" 
+					         android:layout_height="25dp"
+					         android:layout_alignParentLeft="true"
+					         android:background="@drawable/back_w" />
+		      </RelativeLayout>
+		       
+		      <RelativeLayout 
+		          android:layout_width="fill_parent"
+		          android:layout_height="wrap_content"
+		          android:layout_weight="8"
+		          >
+				      <LinearLayout
+				          android:layout_width="fill_parent"
+				          android:layout_height="wrap_content"
+				          android:id="@+id/wid_content" >
+				          <TextView
+					        android:id="@+id/lbl_wid_sub"
+					        android:layout_width="fill_parent"
+					        android:layout_height="wrap_content"
+					        android:layout_weight="99"
+					        android:maxLines="1"
+					        android:ellipsize="marquee"
+				        	android:marqueeRepeatLimit="marquee_forever"
+					        android:textColor="#000000"
+					        android:text="Subject is haouaoigtaoutoat"/>
+				        <TextView
+				        	android:id="@+id/lbl_wid_slt"
+				        	android:layout_weight="1"
+				        	android:layout_width="wrap_content"
+				        	android:layout_height="wrap_content"
+				        	android:maxLines="1"
+				        	android:text="L45+L55+L77 "
+				        	android:textColor="#000000"
+						/>
+				    </LinearLayout>
+				        
+			   		<ProgressBar
+			        android:id="@+id/prg_wid_per"
+			        android:layout_below="@+id/wid_content"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:indeterminate="false">
+			    	</ProgressBar>
+		      </RelativeLayout>
+		      
+		      <RelativeLayout 
+		          android:layout_width="25dp"
+		          android:layout_height="wrap_content"
+		          
+		          >
+				      <ImageButton 
+				         android:id="@+id/img_wid_nxt"
+				         android:layout_width="25dp" 
+				         android:layout_height="25dp"
+				         android:layout_alignParentRight="true"
+				         android:background="@drawable/forward_w" />
+		      </RelativeLayout>
+      
+      </LinearLayout>
 
     </RelativeLayout> 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <style name="HSRightAnim" parent="@android:style/Animation.Activity">
+    <item name="android:windowEnterAnimation">@anim/hs_slide_in_right</item>
+    <item name="android:windowExitAnimation">@anim/hs_slide_out_right</item>
+  </style>
+  <style name="HSRightAnimTheme" parent="android:Theme.Translucent">
+    <item name="android:windowAnimationStyle">@style/HSRightAnim</item>
+  </style>
+
+  <style name="HSBottomAnim" parent="@android:style/Animation.Activity">
+    <item name="android:windowEnterAnimation">@anim/hs_slide_in_bottom</item>
+    <item name="android:windowExitAnimation">@anim/hs_slide_out_bottom</item>
+  </style>
+  <style name="HSBottomAnimTheme" parent="android:Theme.Translucent">
+    <item name="android:windowAnimationStyle">@style/HSBottomAnim</item>
+  </style>
+</resources>

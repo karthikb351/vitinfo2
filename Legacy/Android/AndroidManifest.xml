@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.karthikb351.vitinfo2dev"
+    android:versionCode="11"
+    android:versionName="release.v1.1" >
+
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="15"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+	<uses-permission android:name="android.permission.GET_TASKS"/>
+	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <application
+        android:icon="@drawable/app_icon"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
+        <activity
+            android:name="com.karthikb351.vitacad.MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.karthikb351.vitacad.CaptchaDialog"
+            android:label="Enter Captcha"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Sherlock.Light.NoActionBar">
+        </activity>
+        <activity
+            android:name="com.karthikb351.vitacad.DownloadAttendance"
+            android:label="Getting Attendance"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Sherlock.Light.NoActionBar">
+        </activity>
+        <activity
+            android:name="com.karthikb351.vitacad.GetStuff"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Sherlock.Light.NoActionBar">
+        </activity>
+        <activity
+            android:name="com.karthikb351.vitacad.SubjectDetails"
+            android:label="Subject Details"
+            android:screenOrientation="portrait">
+            
+        </activity>
+        <!-- Start of Crittercism.com Code -->
+			<activity android:name="com.crittercism.NotificationActivity"/>
+		<!-- End of Crittercism.com Code -->
+		
+		
+		<!-- Start of Helpshift Code -->
+		<activity android:name="com.helpshift.HelpshiftActivity"
+		          android:configChanges="orientation|screenLayout"
+		          android:theme="@style/HSBottomAnimTheme" />
+		<activity android:name="com.helpshift.HSAddIssue"
+		          android:theme="@style/HSRightAnimTheme" />
+		<activity android:name="com.helpshift.HSAddProfile"
+		          android:theme="@style/HSRightAnimTheme" />
+		<activity android:name="com.helpshift.HSMessages"
+		          android:theme="@style/HSRightAnimTheme" />
+		<activity android:name="com.helpshift.HSQuestionsList"
+		          android:theme="@style/HSRightAnimTheme" />
+		<activity android:name="com.helpshift.HSQuestion"
+		          android:configChanges="orientation|screenLayout"
+		          android:theme="@style/HSRightAnimTheme" />
+		<!-- End of Helpshift Code -->
+		
+    </application>
+
+</manifest>
