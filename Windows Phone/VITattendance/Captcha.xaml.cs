@@ -42,6 +42,8 @@ namespace VITattendance.ViewModels
         private void webBrowser1_NavigationFailed(object sender, System.Windows.Navigation.NavigationFailedEventArgs e)
         {
             webBrowser1.Visibility = System.Windows.Visibility.Visible;
+            prg1.Visibility = System.Windows.Visibility.Collapsed;
+            MessageBox.Show("Connection Error");
         }
 
         private void textBox1_TextChanged(object sender, TextChangedEventArgs e)

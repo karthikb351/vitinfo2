@@ -71,7 +71,10 @@ namespace VITattendance
                 
             }
             else {
-                reloadData();
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    reloadData();
+                });
             }
         }
 
@@ -128,7 +131,10 @@ namespace VITattendance
         private void bw_Done(object sender, RunWorkerCompletedEventArgs e) {
             if (loadedit == false)
             {
-                reloadData();
+                 Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    reloadData();
+                });
             }
             else {
                 loadedit = false;
@@ -182,24 +188,29 @@ namespace VITattendance
         }
 
         private void reloadData() {
-            this.Items.Clear();
-            AppSettings dat = new AppSettings();
-            
-            string st_num;
-            dat.TryGetSetting<string>("NUMBEROFSUBJECTS" , out st_num);
-            Debug.WriteLine(st_num);
-            for (int i = 0; i <= Convert.ToInt32(st_num); i++) {
-                dat.loadAttendance(i);
-                this.Items.Add(new ItemViewModel() { LineOne = dat.getSubjectName(), LineTwo = dat.getSlot(), LineThree = dat.getPercentage() });
+            try
+            {
+                this.Items.Clear();
+                AppSettings dat = new AppSettings();
+
+                string st_num;
+                dat.TryGetSetting<string>("NUMBEROFSUBJECTS", out st_num);
+                Debug.WriteLine(st_num);
+                for (int i = 0; i <= Convert.ToInt32(st_num); i++)
+                {
+                    dat.loadAttendance(i);
+                    this.Items.Add(new ItemViewModel() { LineOne = dat.getSubjectName(), LineTwo = dat.getSlot(), LineThree = dat.getPercentage() });
+                }
+
+                var currentPage = ((App)Application.Current).RootFrame.Content as Microsoft.Phone.Controls.PhoneApplicationPage;
+                MainPage m = (MainPage)currentPage;
+                m.hidePrg();
+                m.Controller.Visibility = Visibility.Visible;
+                m.textBlock2.Visibility = Visibility.Collapsed;
+                m.refresh.Visibility = Visibility.Visible;
+                loadedit = true;
             }
-            
-            var currentPage = ((App)Application.Current).RootFrame.Content as Microsoft.Phone.Controls.PhoneApplicationPage;
-            MainPage m = (MainPage)currentPage;
-            m.hidePrg();
-            m.Controller.Visibility = Visibility.Visible;
-            m.textBlock2.Visibility = Visibility.Collapsed;
-            m.refresh.Visibility = Visibility.Visible;
-            loadedit = true;
+            catch (Exception ex) { MessageBox.Show("Error occured while loading attendance"); }
         }
 
         /// <summary>
@@ -224,7 +235,10 @@ namespace VITattendance
             
             if (offline == "True")
             {
-                reloadData();
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    reloadData();
+                });
             }
             else {
 

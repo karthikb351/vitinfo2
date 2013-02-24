@@ -126,17 +126,23 @@ namespace VITattendance
             String regno , day , month , year;
             dater = datePicker.Value.Value;
 
-            regno = txt_REG.Text;
-            day = checkDate(dater.Day.ToString());
-            month = checkDate(dater.Month.ToString());
-            year = dater.Year.ToString();
+            if (txt_REG.Text.TrimEnd() != "")
+            {
+                regno = txt_REG.Text;
+                day = checkDate(dater.Day.ToString());
+                month = checkDate(dater.Month.ToString());
+                year = dater.Year.ToString();
 
-            dat.StoreSetting("REGNO", regno);
-            dat.StoreSetting("DAY", day);
-            dat.StoreSetting("MONTH", month);
-            dat.StoreSetting("YEAR", year);
+                dat.StoreSetting("REGNO", regno);
+                dat.StoreSetting("DAY", day);
+                dat.StoreSetting("MONTH", month);
+                dat.StoreSetting("YEAR", year);
 
-            show_captcha();
+                show_captcha();
+            }
+            else {
+                MessageBox.Show("Please enter a valid registration and date of birth", "Error", MessageBoxButton.OK);
+            }
         }
 
         private string checkDate(String dat){

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>MSAF.GoogleAnalytics</id>
+    <version>1.5.4.2</version>
+    <title>Google Analytics for Windows Phone 7 and 8</title>
+    <authors>Mark Monster - Monster Consultancy</authors>
+    <owners>Mark Monster - Monster Consultancy</owners>
+    <licenseUrl>http://msaf.codeplex.com/license</licenseUrl>
+    <projectUrl>http://msaf.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Get Google Analytics to work with your Windows Phone application. 
+
+The package is based on the original Microsoft Silverlight Analytics Framework but focusses on getting Google Analytics to work with Windows Phone.</description>
+    <releaseNotes>Release to help WP7 and WP8 developers get Google Analytics to work with their Windows Phone application. The majority of the source is from the Microsoft Silverlight Analytics Framework.
+- Now with support for Windows Phone 8
+- Support for Real Time tracking in Google Analytics, when using TrackPage.</releaseNotes>
+    <tags>wp7, wpdev, wp7nl, behaviors, msaf, analytics, google ga, wp8</tags>
+    <references>
+      <reference file="Google.WebAnalytics.dll" />
+      <reference file="MC.Phone.Analytics.dll" />
+      <reference file="Microsoft.WebAnalytics.Behaviors.dll" />
+      <reference file="Microsoft.WebAnalytics.dll" />
+      <reference file="System.ComponentModel.Composition.dll" />
+      <reference file="System.ComponentModel.Composition.Initialization.dll" />
+      <reference file="System.Windows.Interactivity.dll" />
+    </references>
+  </metadata>
+</package>

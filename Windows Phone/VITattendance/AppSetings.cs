@@ -31,6 +31,10 @@ public class AppSettings
         StoreSetting<string>(settingName, value);
     }
 
+    public void deleteSetting(string key) {
+        Settings.Remove(key);
+    }
+
     public void StoreSetting<TValue>(string settingName, TValue value)
     {
         if (!Settings.Contains(settingName))
@@ -68,22 +72,29 @@ public class AppSettings
     }
 
     public void loadAttendance(int subnum){
+        
         List<String> data = new List<String>();
         data = loadList("ATTENDANCE");
         int breaker = 0;
-
-        for (int i = 0; i < data.Count; i++)
+        try
         {
-            if (data[i] == ("BREAK" + subnum))
+            for (int i = 0; i < data.Count; i++)
             {
-                breaker = i + 1;
+                if (data[i] == ("BREAK" + subnum))
+                {
+                    breaker = i + 1;
+                }
             }
+            setSubjectCode(data[breaker]);
+            setSubjectName(data[breaker + 1]);
+            setType(data[breaker + 2]);
+            setSlot(data[breaker + 3]);
         }
-        setSubjectCode(data[breaker]);
-        setSubjectName(data[breaker + 1]);
-        setType(data[breaker + 2]);
-        setSlot(data[breaker + 3]);
+        catch (Exception ex) {
+            deleteSetting("REGNO");
 
+            return;
+        } 
         try
         {
             setAttended(Convert.ToInt32(data[breaker + 4]));
