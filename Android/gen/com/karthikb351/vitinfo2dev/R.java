@@ -830,7 +830,7 @@ containing a value of this type.
         public static final int widget_bg=0x7f020075;
     }
     public static final class id {
-        public static final int about=0x7f06005c;
+        public static final int about=0x7f06005d;
         public static final int abs__action_bar=0x7f060022;
         public static final int abs__action_bar_container=0x7f060021;
         public static final int abs__action_bar_subtitle=0x7f060011;
@@ -882,14 +882,15 @@ containing a value of this type.
         public static final int captcha_refresh=0x7f06002a;
         public static final int code_detailed=0x7f06003d;
         public static final int datePicker=0x7f06002f;
-        public static final int details=0x7f06005b;
+        public static final int details=0x7f06005c;
         public static final int diagMsg=0x7f06002d;
         public static final int diagRegno=0x7f06002e;
         public static final int disableHome=0x7f060009;
         public static final int homeAsUp=0x7f060006;
         public static final int img_wid_bck=0x7f060053;
-        public static final int img_wid_nxt=0x7f060058;
+        public static final int img_wid_nxt=0x7f060059;
         public static final int layout=0x7f060052;
+        public static final int lbl_wid_per=0x7f060058;
         public static final int lbl_wid_slt=0x7f060056;
         public static final int lbl_wid_sub=0x7f060055;
         public static final int list=0x7f060031;
@@ -906,10 +907,10 @@ containing a value of this type.
         public static final int progress=0x7f060037;
         public static final int progressBar_detailed=0x7f060042;
         public static final int progress_layout=0x7f060041;
-        public static final int refreshAtt=0x7f06005a;
-        public static final int refresh_atten_details=0x7f060059;
+        public static final int refreshAtt=0x7f06005b;
+        public static final int refresh_atten_details=0x7f06005a;
         public static final int scrollView1=0x7f06003c;
-        public static final int share=0x7f06005d;
+        public static final int share=0x7f06005e;
         public static final int showCustom=0x7f060008;
         public static final int showHome=0x7f060005;
         public static final int showTitle=0x7f060007;

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
+    android:layout_height="110dp"
     android:background="@drawable/appwidget_bg"
     android:layout_margin="3dp">
 <LinearLayout
@@ -12,15 +12,18 @@
           android:gravity="center_vertical">
 
 		      <RelativeLayout 
-		          android:layout_width="25dp"
-		          android:layout_height="wrap_content"
+		          android:layout_width="50dp"
+		          android:id="@+id/img_wid_bck"
+		          android:layout_height="fill_parent"
+		          android:clickable="true"
 		          android:layout_weight="1"
+		          android:gravity="center"
+		          style="@style/Widget.Sherlock.ActionButton"
 		          >
 				      <ImageButton 
-					         android:id="@+id/img_wid_bck"
 					         android:layout_width="25dp" 
 					         android:layout_height="25dp"
-					         android:layout_alignParentLeft="true"
+					         android:clickable="false"
 					         android:background="@drawable/back_w" />
 		      </RelativeLayout>
 		       
@@ -53,26 +56,44 @@
 				        	android:textColor="#000000"
 						/>
 				    </LinearLayout>
-				        
-			   		<ProgressBar
-			        android:id="@+id/prg_wid_per"
-			        android:layout_below="@+id/wid_content"
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:indeterminate="false">
-			    	</ProgressBar>
+				    <LinearLayout
+				          android:layout_width="fill_parent"
+				          android:layout_height="wrap_content"
+				          android:layout_below="@+id/wid_content" >    
+					   		<ProgressBar
+					        android:id="@+id/prg_wid_per"
+					        style="@style/Widget.Sherlock.Light.ProgressBar.Horizontal"
+					        android:layout_width="1dp"
+					        android:layout_height="wrap_content"
+					        android:layout_weight="9"
+					        />
+					   		<TextView
+						        	android:id="@+id/lbl_wid_per"
+						        	android:layout_weight="1"
+						        	android:layout_width="wrap_content"
+						        	android:layout_height="wrap_content"
+						        	android:layout_marginLeft="5dp"
+						        	android:gravity="right"
+						        	android:maxLines="1"
+						        	android:text="50%"
+						        	android:textColor="#000000"
+								/>
+					  </LinearLayout>
 		      </RelativeLayout>
 		      
-		      <RelativeLayout 
-		          android:layout_width="25dp"
-		          android:layout_height="wrap_content"
-		          
+		      <RelativeLayout
+		          android:layout_width="50dp"
+		          android:id="@+id/img_wid_nxt"
+		          android:layout_height="fill_parent"
+		          android:clickable="true"
+		          android:layout_weight="1"
+		          android:gravity="center"
+		          style="@style/Widget.Sherlock.ActionButton"
 		          >
 				      <ImageButton 
-				         android:id="@+id/img_wid_nxt"
 				         android:layout_width="25dp" 
 				         android:layout_height="25dp"
-				         android:layout_alignParentRight="true"
+				         android:clickable="false"
 				         android:background="@drawable/forward_w" />
 		      </RelativeLayout>
       

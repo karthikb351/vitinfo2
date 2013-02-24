@@ -68,10 +68,11 @@ public class UpdateWidget extends Service {
 			  //LOAD THE DATA
 			  sub = dat.loadSubject(cur);
 			  
-			  //SET DATE OF THE SUBJECT
+			  //SET DATA OF THE SUBJECT
 			  remoteViews.setTextViewText(R.id.lbl_wid_sub , sub.title);
 			  remoteViews.setProgressBar(R.id.prg_wid_per, sub.conducted, sub.attended , false);
-			  remoteViews.setTextViewText(R.id.lbl_wid_slt, sub.slot);
+			  remoteViews.setTextViewText(R.id.lbl_wid_slt, sub.slot+" ");
+			  remoteViews.setTextViewText(R.id.lbl_wid_per, String.valueOf(sub.percentage)+"%");
 			  
 			  
 			  //ONCLICK LISTENERS DONT CHANGE THESE
