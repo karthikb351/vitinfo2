@@ -170,6 +170,7 @@ public class MainActivity extends SherlockActivity {
         switch (item.getItemId()) {
         	case R.id.about:
         		mTracker.sendEvent("ui_action", "button_press", "about", 0l);
+        		mTracker.sendView("/MainActivity/About");
             	hs.showSupport(MainActivity.this);
         		return true;
         	
