@@ -83,6 +83,26 @@ public class MainActivity extends SherlockActivity {
 	SubmitCaptchaTask currentSCTask;
 	EditText captcha_edittext;
 	String captcha="";
+	
+	
+	//TESTING MARKS!
+	
+	static String js = "[[[\"1\", \"2203\", \"ECE201\", \"Probability Theory and Random Process\", \"Theory Only\", \"\", \"\", \"\", \"\", \"Present\", \"2.00\", \"\", \"\", \"\", \"\", \"\", \"\", \"N/A\"], [\"2\", \"2221\", \"ECE202\", \"Transmission Lines and fields\", \"Theory Only\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"N/A\"], [\"3\", \"2232\", \"ECE203\", \"Modulation Techniques\", \"Embedded Theory\", \"\", \"\", \"\", \"\", \"Present\", \"4.25\", \"\", \"\", \"\", \"\", \"\", \"\", \"N/A\"], [\"4\", \"3609\", \"ECE203\", \"Modulation Techniques\", \"Embedded Lab\", \"N/A\", \"\", \"\"], [\"5\", \"3668\", \"ECE204\", \"Analog Circuit Design\", \"Embedded Lab\", \"N/A\", \"\", \"\"], [\"6\", \"2341\", \"ECE205\", \"Electrical and Electronic Measurements\", \"Theory Only\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"N/A\"], [\"7\", \"2312\", \"ECE304\", \"Microcontroller and Applications\", \"Embedded Theory\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"N/A\"], [\"8\", \"3540\", \"ECE304\", \"Microcontroller and Applications\", \"Embedded Lab\", \"N/A\", \"\", \"\"], [\"9\", \"1832\", \"ENG102\", \"English for Engineers II\", \"Embedded Theory\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"N/A\"], [\"10\", \"3368\", \"ENG102\", \"English for Engineers II\", \"Embedded Lab\", \"N/A\", \"\", \"\"], [\"11\", \"3534\", \"HUM121\", \"Ethics and Values\", \"Embedded Lab\", \"N/A\", \"\", \"\"]], [[\"1\", \"2252\", \"ECE204\", \"Analog Circuit Design\", \"Embedded Theory\", \"CLASS TEST 1\", \"MID TERM EXAM\", \"CLASS TEST 2\", \"PROJECT\", \"N/A\", \"10\", \"50\", \"10\", \"20\", \"N/A\", \"5\", \"20\", \"5\", \"20\", \"N/A\", \"\", \"\", \"\", \"\", \"N/A\", \"\", \"\", \"\", \"\", \"N/A\", \"\", \"\", \"\", \"\", \"N/A\", \"\", \"\", \"\", \"\", \"N/A\"], [\"2\", \"1386\", \"HUM121\", \"Ethics and Values\", \"Embedded Theory\", \"CASE ANALYSIS 1\", \"MID TERM TEST 1\", \"CASE ANALYSIS 2\", \"MID TERM TEST 2\", \"MINI PROJECT\", \"5\", \"15\", \"5\", \"15\", \"10\", \"5\", \"15\", \"5\", \"15\", \"10\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\"]]]";
+	
+	void trySave(){
+		DataHandler dt = new DataHandler(getApplicationContext());
+		
+		//SAVE THE JSON STRING
+		dt.saveMarks(js);
+		
+		//LOAD THE MARKS USING CLASS NBR
+		Mark mk = dt.loadMarks("2203");
+		
+		Log.v("TESTTEESTT", mk.quiz[0].marks);
+		
+	}
+	//TEST ENDS WORKS :)
+	
 	void extrasInit(String reg, String uid)
 	{
 		try {
@@ -131,6 +151,7 @@ public class MainActivity extends SherlockActivity {
     	tv=(TextView)findViewById(R.id.updateOn);
     	listViewSub=(ListView)findViewById(R.id.list);
     	isMainRunning=true;
+    	trySave();
     	startUp();
     	checkStatus();
     }
