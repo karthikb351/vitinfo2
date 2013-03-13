@@ -326,10 +326,10 @@ public class MainActivity extends SherlockActivity {
     }
 	boolean checkcredentials()
     {
+		
     	boolean flag=false;
-    	if(REGNO.length()==9)
-    		if(REGNO.matches("(\\d)+(\\d)+([A-Z])+([A-Z])+([A-Z])+(\\d)+(\\d)+(\\d)")||REGNO.matches("(\\d)+(\\d)+([A-Z])+([A-Z])+([A-Z])+(\\d)+(\\d)+(\\d)+(\\d)"))
-    			flag=true;
+    	if(REGNO.matches("(\\d)+(\\d)+([A-Z])+([A-Z])+([A-Z])+(\\d)+(\\d)+(\\d)")||REGNO.matches("(\\d)+(\\d)+([A-Z])+([A-Z])+([A-Z])+(\\d)+(\\d)+(\\d)+(\\d)"))
+    		flag=true;
     	return flag;
     	
     }
