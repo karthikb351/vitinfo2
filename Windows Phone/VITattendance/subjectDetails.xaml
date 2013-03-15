@@ -12,7 +12,8 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait"  Orientation="Portrait"
-    shell:SystemTray.IsVisible="False">
+    shell:SystemTray.IsVisible="False"
+    xmlns:my="clr-namespace:Microsoft.Advertising.Mobile.UI;assembly=Microsoft.Advertising.Mobile.UI">
 
     <!--LayoutRoot contains the root grid where all other page content is placed-->
     <Grid x:Name="LayoutRoot">
@@ -30,6 +31,7 @@
                     <Button Content="-" Height="72" HorizontalAlignment="Left" Margin="1,0,0,112" Name="button3" VerticalAlignment="Bottom" Width="96" Click="button3_Click" />
                     <Button Content="+" Height="72" HorizontalAlignment="Right" Margin="0,0,0,108" Name="button4" VerticalAlignment="Bottom" Width="96" Click="button4_Click" />
                     <TextBlock Height="30" HorizontalAlignment="Left" Margin="86,336,0,0" Name="textBlock2" Text="If you attend 0 class" TextAlignment="Center" VerticalAlignment="Top" Width="253" />
+                    <my:AdControl ApplicationId="77d42833-22fb-4595-8124-f345b7f66ebc" AdUnitId="116816" HorizontalAlignment="Center" Name="adControl1" VerticalAlignment="Bottom" Width="480" Height="80" />
                 </Grid>
             </controls:PanoramaItem>
 

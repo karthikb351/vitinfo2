@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Coding4Fun.Phone.Controls;
 using VITattendance.ViewModels;
+using System.Windows.Navigation;
 
 
 namespace VITattendance
@@ -25,7 +26,6 @@ namespace VITattendance
         public MainPage()
         {
 
-            
             InitializeComponent();
             // Set the data context of the listbox control to the sample data
             
@@ -41,13 +41,9 @@ namespace VITattendance
         {
             prg1.Visibility = System.Windows.Visibility.Visible;
         }
-        
-
-
 
         void messagePrompt_Completed(object sender, PopUpEventArgs<string, PopUpResult> e)
         {
-            
             dat = new AppSettings();
             dat.StoreSetting("OFFLINE", Convert.ToString(offline));
             App.ViewModel.LoadData();
@@ -63,44 +59,47 @@ namespace VITattendance
             messagePrompt.Show();
         }
 
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            IDictionary<string, string> parameters = this.NavigationContext.QueryString;
-            if (parameters.ContainsKey("ONLINE"))
+            if (e.NavigationMode == NavigationMode.New)
             {
-                offline = false;
-            }
-        }
+                IDictionary<string, string> parameters = this.NavigationContext.QueryString;
+                if (parameters.ContainsKey("ONLINE"))
+                {
+                    offline = false;
+                }
 
+                dat = new AppSettings();
+                String regno;
+                bool firstRun;
+
+                firstRun = dat.TryGetSetting<string>("REGNO", out regno);
+
+                //CHECK IF FIRST RUN
+                if (firstRun)
+                {
+                    loadData();
+
+                    //CHECK IF ONLINE OR OFFLINE
+                    if (offline) { dat.StoreSetting("OFFLINE", Convert.ToString(offline)); App.ViewModel.LoadData(); }
+                    else { offline = false; show_captcha(); }
+                }
+
+                else { Controller.DefaultItem = Controller.Items[2]; offline = false; }
+            }
+            
+        }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
            
-           
-            dat = new AppSettings();
-            
-            
-            String regno;
-            bool firstRun;
-
-            firstRun = dat.TryGetSetting<string>("REGNO", out regno);
-
-            //CHECK IF FIRST RUN
-            if (firstRun) {
-                loadData();
-               
-                //CHECK IF ONLINE OR OFFLINE
-                if (offline) { dat.StoreSetting("OFFLINE", Convert.ToString(offline)); App.ViewModel.LoadData();  }
-                else { offline = false; show_captcha(); }    
-            }
-
-            else { Controller.DefaultItem = Controller.Items[2]; offline = false; }
             //prg_show = false;
-
         }
 
         private void loadData() {
+            System.Diagnostics.Debug.WriteLine("Called");
             dat = new AppSettings();
             String regno, day, month, year,st_dat;
             DateTime dater;
@@ -113,9 +112,6 @@ namespace VITattendance
             st_dat = day + "/" + month + "/" + year;
             dater = DateTime.Parse(st_dat, culture);
             datePicker.Value = dater;
-
-
-            
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)
@@ -125,6 +121,7 @@ namespace VITattendance
             DateTime dater;
             String regno , day , month , year;
             dater = datePicker.Value.Value;
+
 
             if (txt_REG.Text.TrimEnd() != "")
             {
@@ -138,6 +135,7 @@ namespace VITattendance
                 dat.StoreSetting("MONTH", month);
                 dat.StoreSetting("YEAR", year);
 
+                offline = false;
                 show_captcha();
             }
             else {
@@ -166,7 +164,6 @@ namespace VITattendance
             }
             else
                 refresh.Visibility = System.Windows.Visibility.Collapsed;
-
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -176,6 +173,10 @@ namespace VITattendance
             }
             
             NavigationService.Navigate(new Uri("/subjectDetails.xaml?selectedItem=" + listBox.SelectedIndex, UriKind.Relative));
+        }
+
+        private void txt_REG_TextChanged(object sender, TextChangedEventArgs e)
+        {
 
         }
         

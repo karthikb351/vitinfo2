@@ -167,7 +167,7 @@ namespace VITattendance
                 submit.OpenReadAsync(new Uri(url));
 
                 while (working == true)
-                    System.Threading.Thread.Sleep(100);
+                    System.Threading.Thread.Sleep(10);
                 
 
                 submit = new WebClient();
@@ -221,9 +221,9 @@ namespace VITattendance
             var currentPage = ((App)Application.Current).RootFrame.Content as Microsoft.Phone.Controls.PhoneApplicationPage;
             MainPage m = (MainPage)currentPage;
             m.showPrg();
-            m.Controller.Visibility = Visibility.Collapsed;
+            //m.Controller.Visibility = Visibility.Collapsed;
             m.refresh.Visibility = Visibility.Collapsed;
-            m.textBlock2.Visibility = Visibility.Visible;
+            //m.textBlock2.Visibility = Visibility.Visible;
             this.Items.Clear();
             
            String offline;

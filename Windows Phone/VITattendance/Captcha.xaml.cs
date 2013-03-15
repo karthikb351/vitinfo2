@@ -14,12 +14,15 @@ namespace VITattendance.ViewModels
 {
     public partial class Captcha : UserControl
     {
+        AppSettings dat = new AppSettings();
 
         public Captcha()
         {
             InitializeComponent();
             webBrowser1.Visibility = System.Windows.Visibility.Collapsed;
-            webBrowser1.Navigate(new Uri("http://vita-biocross.rhcloud.com/captchaWP.php?regno=11bec0262"));
+            String regno;
+            dat.TryGetSetting<String>("REGNO", out regno);
+            webBrowser1.Navigate(new Uri("http://vita-biocross.rhcloud.com/captchaWP.php?regno=" + regno));
             textBox1.Focus();
         }
 
@@ -27,7 +30,9 @@ namespace VITattendance.ViewModels
         {
             webBrowser1.Visibility = System.Windows.Visibility.Collapsed;
             prg1.Visibility = System.Windows.Visibility.Visible;
-            webBrowser1.Navigate(new Uri("http://vita-biocross.rhcloud.com/captchaWP.php?regno=11bec0262")); 
+            String regno;
+            dat.TryGetSetting<String>("REGNO", out regno);
+            webBrowser1.Navigate(new Uri("http://vita-biocross.rhcloud.com/captchaWP.php?regno=" + regno)); 
             
         }
 

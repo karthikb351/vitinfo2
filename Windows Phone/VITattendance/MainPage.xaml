@@ -68,11 +68,11 @@
 
                 <Grid Name="gridSettings">
                     <Button Content="Save" Height="72" HorizontalAlignment="Center" Name="button1" VerticalAlignment="Bottom"  Width="213" Click="button1_Click" Margin="100,0,106,89" />
-                    <TextBox Name="txt_REG" Height="71" HorizontalAlignment="Center" Margin="0,93,6,0" Text="" VerticalAlignment="Top" Width="414" />
+                    <TextBox Name="txt_REG" Height="71" HorizontalAlignment="Center" Margin="0,93,6,0" Text="" VerticalAlignment="Top" Width="414" TextChanged="txt_REG_TextChanged" />
                     <TextBlock Height="30" HorizontalAlignment="Left" Margin="6,56,0,0" Name="lbl_REG" Text="Enter registration number:" VerticalAlignment="Top" Width="243" />
                     <toolkit:DatePicker x:Name="datePicker" Value="2/3/2010" Margin="3,246,1,178" Height="74" Width="416" />
                     <TextBlock Height="30" HorizontalAlignment="Left" Margin="10,203,0,0" Name="textBlock1" Text="Enter date of birth:" VerticalAlignment="Top" Width="243" />
-                    <!--my:AdControl ApplicationId="77d42833-22fb-4595-8124-f345b7f66ebc" AdUnitId="116816" HorizontalAlignment="Center" Name="adControl1" VerticalAlignment="Bottom" Width="480" Height="80" /-->
+                    <my:AdControl ApplicationId="77d42833-22fb-4595-8124-f345b7f66ebc" AdUnitId="116816" HorizontalAlignment="Center" Name="adControl1" VerticalAlignment="Bottom" Width="480" Height="80" />
                 </Grid>
 
 
