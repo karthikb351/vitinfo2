@@ -37,6 +37,9 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -47,14 +50,15 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.actionbarsherlock.app.SherlockActivity;
 import com.crittercism.app.Crittercism;
+import com.fima.cardsui.views.CardUI;
 import com.google.analytics.tracking.android.GAServiceManager;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
 import com.helpshift.Helpshift;
 import com.karthikb351.vitinfo2dev.R;
+import com.sau.cardtypes.CurrentCard;
 
 public class MainActivity extends SherlockActivity {
 	
@@ -83,6 +87,14 @@ public class MainActivity extends SherlockActivity {
 	SubmitCaptchaTask currentSCTask;
 	EditText captcha_edittext;
 	String captcha="";
+	private CardUI mCardView;
+	
+	void loadCards(){
+		mCardView = (CardUI) findViewById(R.id.cardsview);
+		mCardView.setSwipeable(false);
+		mCardView.addCard(new CurrentCard());
+		mCardView.refresh();
+	}
 	
 	
 	//TESTING MARKS!
@@ -140,20 +152,24 @@ public class MainActivity extends SherlockActivity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	
+    	requestWindowFeature(Window.FEATURE_NO_TITLE);
     	settings = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
     	TelephonyManager tManager = (TelephonyManager)MainActivity.this.getSystemService(Context.TELEPHONY_SERVICE);
     	String uid = tManager.getDeviceId(), reg=settings.getString("regno", "USERNAME");
     	extrasInit(reg, uid);
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.main);
+    	
     	mTracker.sendView("/MainActivity");
     	tv=(TextView)findViewById(R.id.updateOn);
+    	
     	listViewSub=(ListView)findViewById(R.id.list);
+    	
     	isMainRunning=true;
     	trySave();
     	startUp();
     	checkStatus();
+    	
     }
     
     private void checkStatus() {
@@ -220,6 +236,7 @@ public class MainActivity extends SherlockActivity {
 	
     void loadSubjects()
     {
+    	loadCards();
     	List listSub= new ArrayList();
     	DataHandler dat=new DataHandler(MainActivity.this);
     	int length=dat.getSubLength();
@@ -227,8 +244,37 @@ public class MainActivity extends SherlockActivity {
     	{
     		listSub.add(dat.loadSubject(i));
     	}
+    	
+    	/*
+    	PullToRefreshListView pullToRefreshView = (PullToRefreshListView) findViewById (R.id.list);
+    	pullToRefreshView.setOnRefreshListener(new OnRefreshListener<ListView>() {
+    	    @Override
+    	    public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+    	    	mCardView.setVisibility(View.VISIBLE);
+    	    }
+    	    
+    	});
+    	pullToRefreshView.onRefreshComplete();
+    	*/
     	listViewSub.setAdapter(new SubjectAdapter(MainActivity.this, R.layout.single_item_sub, listSub));
+    	
+    	
     	listViewSub.setOnItemClickListener(otcl);
+    	/*listViewSub.setOnScrollListener(new OnScrollListener() {
+    	    @Override
+    	    public void onScroll(AbsListView view, int firstVisibleItem, 
+    	        int visibleItemCount, int totalItemCount) {
+    	        //Check if the last view is visible
+    	        if (firstVisibleItem == 2 ) {
+    	        	//mCardView.startAnimation(new MyScaler(1.0f, 1.0f, 1.0f, 0.0f, 500, view, true));
+    	        	//mCardView.setVisibility(View.GONE);
+    	        }
+    	    }
+			@Override
+			public void onScrollStateChanged(AbsListView arg0, int arg1) {
+				// TODO Auto-generated method stu
+			}
+    	});*/
     	long time=settings.getLong("updateOn", -1);
     	Time now=new Time();
     	now.setToNow();
